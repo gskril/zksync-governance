@@ -15,7 +15,7 @@ export function ConnectButton() {
   const { disconnect } = useDisconnect()
 
   const { address } = useAccount()
-  const { data: ensName } = useEnsName({ address })
+  const { data: ensName } = useEnsName({ address, chainId: 1 })
 
   if (address) {
     return (

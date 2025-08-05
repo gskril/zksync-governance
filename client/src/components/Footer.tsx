@@ -1,10 +1,9 @@
 import { Fragment } from 'react'
 
 const links = [
-  { href: 'https://ens.domains', label: 'ENS' },
-  { href: 'https://docs/ens.domains/dao', label: 'Governance Docs' },
-  { href: 'https://x.com/ENS_DAO', label: 'Twitter' },
-  { href: 'https://github.com/gskril/ens-governor-app', label: 'GitHub' },
+  { href: 'https://www.zksync.io/', label: 'ZKsync' },
+  { href: 'https://docs.zknation.io/', label: 'Governance Docs' },
+  { href: 'https://x.com/zksync/', label: 'Twitter' },
 ]
 
 export function Footer() {

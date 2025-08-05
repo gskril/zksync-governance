@@ -109,7 +109,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
         >
           {hasVoted === true
             ? 'Already Voted'
-            : `Vote with ${bigintToFormattedString(votingPower ?? '0')} $ENS`}
+            : `Vote with ${bigintToFormattedString(votingPower ?? '0')} $ZK`}
         </Button>
       </DialogTrigger>
 
@@ -171,7 +171,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
                   className="font-bold"
                   isLoading={tx.isPending || receipt.isLoading}
                 >
-                  Vote with {bigintToFormattedString(votingPower ?? '0')} $ENS
+                  Vote with {bigintToFormattedString(votingPower ?? '0')} $ZK
                 </Button>
               )}
             </div>

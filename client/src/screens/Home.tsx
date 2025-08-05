@@ -31,8 +31,8 @@ export function Home() {
         <div className="flex flex-col justify-between gap-3 md:flex-row md:gap-12">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <img
-              src="/img/logo-filled.svg"
-              alt="ENS Logo"
+              src="/img/logo-filled.png"
+              alt="ZKsync Logo"
               width={160}
               height={160}
               className="w-28 -rotate-3 rounded-3xl border-4 border-white shadow-[0_0_22px_0_#00000029] md:w-40"
@@ -41,16 +41,15 @@ export function Home() {
             <div className="space-y-3">
               <h1 className="space-y-3">
                 <span className="line block text-2xl font-semibold leading-none text-primary-brand">
-                  ENS
+                  ZKsync
                 </span>{' '}
                 <span className="block text-3xl font-bold leading-none lg:text-5xl">
-                  Executable Proposals
+                  Governance
                 </span>
               </h1>
 
               <h2 className="text-base font-medium text-zinc-500">
-                View and vote on executable proposals from the ENS Protocol and
-                DAO.
+                View and vote on proposals in the ZKsync Governance System.
               </h2>
             </div>
           </div>

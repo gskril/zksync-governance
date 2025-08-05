@@ -8,7 +8,7 @@ import { Typography } from './ui/typography'
 type Props = { vote: EnhancedProposalWithVotes['votes'][number] }
 
 export function ProposalVote({ vote }: Props) {
-  const { data: ensName } = useEnsName({ address: vote.voter })
+  const { data: ensName } = useEnsName({ address: vote.voter, chainId: 1 })
 
   return (
     <div key={vote.id} className="space-y-1.5 text-sm font-medium">

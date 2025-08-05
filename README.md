@@ -1,7 +1,5 @@
-# ENS DAO Governance
+# ZKsync Governance
 
-View and participate in executable proposals that govern the ENS Protocol and DAO.
-
-The goal of this is not to provide any new functionality to the ecosystem, but rather exist as an open-source backup/alternative to existing governance tools.
+View and participate in ZKsync governance.
 
 See [indexer](./indexer/README.md) and [client](./client/README.md) for technical details.

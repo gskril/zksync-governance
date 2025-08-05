@@ -41,7 +41,10 @@ export function Proposal() {
   const { id } = useParams()
   const { data: proposal, error: proposalError } = useProposal(id as string)
 
-  const { data: proposerEnsName } = useEnsName({ address: proposal?.proposer })
+  const { data: proposerEnsName } = useEnsName({
+    address: proposal?.proposer,
+    chainId: 1,
+  })
 
   if (proposalError) {
     return <div>Error: {proposalError.message}</div>
