@@ -1,7 +1,11 @@
 import { createConfig } from 'ponder'
 import { http } from 'viem'
 
-import { GovernorContract } from './contracts'
+import {
+  GovernorContract,
+  ZkGovOpsGovernor,
+  ZkProtocolGovernor,
+} from './contracts'
 
 export default createConfig({
   chains: {
@@ -12,7 +16,12 @@ export default createConfig({
   },
   contracts: {
     Governor: {
-      ...GovernorContract,
+      address: [
+        GovernorContract.address,
+        ZkProtocolGovernor.address,
+        ZkGovOpsGovernor.address,
+      ],
+      abi: GovernorContract.abi,
       chain: 'zkSync',
     },
   },

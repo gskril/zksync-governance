@@ -35,7 +35,8 @@ ponder.on('Governor:ProposalCreated', async ({ event, context }) => {
 
   // Minimum number of cast voted required for a proposal to be successful
   const quorum = await context.client.readContract({
-    ...context.contracts.Governor,
+    abi: context.contracts.Governor.abi,
+    address: event.log.address,
     functionName: 'quorum',
     args: [event.block.number - 1n],
   })
