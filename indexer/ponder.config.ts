@@ -1,3 +1,4 @@
+import { loadBalance } from '@ponder/utils'
 import { createConfig } from 'ponder'
 import { http } from 'viem'
 
@@ -11,7 +12,12 @@ export default createConfig({
   chains: {
     zkSync: {
       id: 324,
-      rpc: http(process.env.PONDER_RPC_URL),
+      rpc: loadBalance([
+        // http(process.env.PONDER_RPC_URL)
+        http('https://mainnet.era.zksync.io'),
+        http('https://1rpc.io/zksync2-era'),
+        http('https://rpc.ankr.com/zksync_era'),
+      ]),
     },
   },
   contracts: {
