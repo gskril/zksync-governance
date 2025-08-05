@@ -38,7 +38,7 @@ ponder.on('Governor:ProposalCreated', async ({ event, context }) => {
     abi: context.contracts.Governor.abi,
     address: event.log.address,
     functionName: 'quorum',
-    args: [event.block.number - 1n],
+    args: [event.block.timestamp - 1n],
   })
 
   await context.db.insert(proposal).values({
