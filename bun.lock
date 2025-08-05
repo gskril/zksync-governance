@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "ens-governor-app",
+      "name": "zksync-governance",
       "devDependencies": {
         "@cloudflare/workers-types": "^4.20250805.0",
         "bun-types": "latest",

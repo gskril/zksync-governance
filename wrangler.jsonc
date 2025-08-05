@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "ens-governor-app",
+  "name": "zksync-governance",
   "main": "./server/dist/index.js", // Path to worker
   "compatibility_date": "2025-05-25",
   "assets": {
