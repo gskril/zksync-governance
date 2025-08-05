@@ -5,15 +5,15 @@ import { GovernorContract } from './contracts'
 
 export default createConfig({
   chains: {
-    mainnet: {
-      id: 1,
-      rpc: http(process.env.PONDER_RPC_URL_1),
+    zkSync: {
+      id: 324,
+      rpc: http(process.env.PONDER_RPC_URL),
     },
   },
   contracts: {
     Governor: {
       ...GovernorContract,
-      chain: 'mainnet',
+      chain: 'zkSync',
     },
   },
 })

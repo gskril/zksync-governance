@@ -5,8 +5,6 @@ export const proposal = onchainTable('proposal', (t) => ({
   title: t.text().notNull(),
   createdAtBlock: t.bigint().notNull(),
   createdAtTimestamp: t.bigint().notNull(),
-  startTimestamp: t.bigint().notNull(),
-  endTimestamp: t.bigint().notNull(),
   queuedAtTimestamp: t.bigint(),
   executedAtTimestamp: t.bigint(),
   canceledAtTimestamp: t.bigint(),
@@ -23,8 +21,8 @@ export const proposal = onchainTable('proposal', (t) => ({
   values: t.jsonb().notNull(),
   signatures: t.jsonb().notNull(),
   calldatas: t.jsonb().notNull(),
-  startBlock: t.bigint().notNull(),
-  endBlock: t.bigint().notNull(),
+  startTimestamp: t.bigint().notNull(),
+  endTimestamp: t.bigint().notNull(),
   description: t.text().notNull(),
 }))
 
@@ -52,8 +50,8 @@ export const proposalCreatedEvent = onchainTable(
     values: t.jsonb().notNull(),
     signatures: t.jsonb().notNull(),
     calldatas: t.jsonb().notNull(),
-    startBlock: t.bigint().notNull(),
-    endBlock: t.bigint().notNull(),
+    voteStart: t.bigint().notNull(),
+    voteEnd: t.bigint().notNull(),
     description: t.text().notNull(),
   })
 )
@@ -74,16 +72,6 @@ export const proposalQueuedEvent = onchainTable('proposalQueuedEvent', (t) => ({
   proposalId: t.bigint().notNull(),
   eta: t.bigint().notNull(),
 }))
-
-export const quorumNumeratorUpdatedEvent = onchainTable(
-  'quorumNumeratorUpdatedEvent',
-  (t) => ({
-    id: t.text().primaryKey(),
-    timestamp: t.bigint().notNull(),
-    oldQuorumNumerator: t.bigint().notNull(),
-    newQuorumNumerator: t.bigint().notNull(),
-  })
-)
 
 export const timelockChangeEvent = onchainTable('timelockChangeEvent', (t) => ({
   id: t.text().primaryKey(),

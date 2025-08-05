@@ -1,22 +1,107 @@
 export const GovernorContract = {
-  address: '0x323A76393544d5ecca80cd6ef2A560C6a395b7E3',
-  startBlock: 13533772, // When the contract was deployed, so Ponder knows where to start indexing
+  address: '0xb83FF6501214ddF40C91C9565d095400f3F45746',
+  startBlock: 55519658, // When the contract was deployed, so Ponder knows where to start indexing
   abi: [
     {
       inputs: [
         {
-          internalType: 'contract ERC20Votes',
-          name: '_token',
-          type: 'address',
-        },
-        {
-          internalType: 'contract TimelockController',
-          name: '_timelock',
-          type: 'address',
+          components: [
+            { internalType: 'string', name: 'name', type: 'string' },
+            { internalType: 'contract IVotes', name: 'token', type: 'address' },
+            {
+              internalType: 'contract TimelockController',
+              name: 'timelock',
+              type: 'address',
+            },
+            {
+              internalType: 'uint48',
+              name: 'initialVotingDelay',
+              type: 'uint48',
+            },
+            {
+              internalType: 'uint32',
+              name: 'initialVotingPeriod',
+              type: 'uint32',
+            },
+            {
+              internalType: 'uint256',
+              name: 'initialProposalThreshold',
+              type: 'uint256',
+            },
+            { internalType: 'uint224', name: 'initialQuorum', type: 'uint224' },
+            {
+              internalType: 'uint64',
+              name: 'initialVoteExtension',
+              type: 'uint64',
+            },
+            { internalType: 'address', name: 'vetoGuardian', type: 'address' },
+            {
+              internalType: 'address',
+              name: 'proposeGuardian',
+              type: 'address',
+            },
+            { internalType: 'bool', name: 'isProposeGuarded', type: 'bool' },
+          ],
+          internalType: 'struct ZkTokenGovernor.ConstructorParams',
+          name: 'params',
+          type: 'tuple',
         },
       ],
       stateMutability: 'nonpayable',
       type: 'constructor',
+    },
+    { inputs: [], name: 'Empty', type: 'error' },
+    { inputs: [], name: 'InvalidShortString', type: 'error' },
+    {
+      inputs: [{ internalType: 'string', name: 'str', type: 'string' }],
+      name: 'StringTooLong',
+      type: 'error',
+    },
+    { inputs: [], name: 'Unauthorized', type: 'error' },
+    { inputs: [], name: 'UncancelableProposalState', type: 'error' },
+    {
+      anonymous: false,
+      inputs: [],
+      name: 'EIP712DomainChanged',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'bool',
+          name: 'oldState',
+          type: 'bool',
+        },
+        {
+          indexed: false,
+          internalType: 'bool',
+          name: 'newState',
+          type: 'bool',
+        },
+      ],
+      name: 'IsProposeGuardedToggled',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint64',
+          name: 'oldVoteExtension',
+          type: 'uint64',
+        },
+        {
+          indexed: false,
+          internalType: 'uint64',
+          name: 'newVoteExtension',
+          type: 'uint64',
+        },
+      ],
+      name: 'LateQuorumVoteExtensionSet',
+      type: 'event',
     },
     {
       anonymous: false,
@@ -73,13 +158,13 @@ export const GovernorContract = {
         {
           indexed: false,
           internalType: 'uint256',
-          name: 'startBlock',
+          name: 'voteStart',
           type: 'uint256',
         },
         {
           indexed: false,
           internalType: 'uint256',
-          name: 'endBlock',
+          name: 'voteEnd',
           type: 'uint256',
         },
         {
@@ -109,6 +194,25 @@ export const GovernorContract = {
       anonymous: false,
       inputs: [
         {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'proposalId',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint64',
+          name: 'extendedDeadline',
+          type: 'uint64',
+        },
+      ],
+      name: 'ProposalExtended',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
           indexed: false,
           internalType: 'uint256',
           name: 'proposalId',
@@ -130,17 +234,36 @@ export const GovernorContract = {
         {
           indexed: false,
           internalType: 'uint256',
-          name: 'oldQuorumNumerator',
+          name: 'oldProposalThreshold',
           type: 'uint256',
         },
         {
           indexed: false,
           internalType: 'uint256',
-          name: 'newQuorumNumerator',
+          name: 'newProposalThreshold',
           type: 'uint256',
         },
       ],
-      name: 'QuorumNumeratorUpdated',
+      name: 'ProposalThresholdSet',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'oldQuorum',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'newQuorum',
+          type: 'uint256',
+        },
+      ],
+      name: 'QuorumUpdated',
       type: 'event',
     },
     {
@@ -200,6 +323,87 @@ export const GovernorContract = {
       type: 'event',
     },
     {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'voter',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'proposalId',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint8',
+          name: 'support',
+          type: 'uint8',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'weight',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'string',
+          name: 'reason',
+          type: 'string',
+        },
+        {
+          indexed: false,
+          internalType: 'bytes',
+          name: 'params',
+          type: 'bytes',
+        },
+      ],
+      name: 'VoteCastWithParams',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'oldVotingDelay',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'newVotingDelay',
+          type: 'uint256',
+        },
+      ],
+      name: 'VotingDelaySet',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'oldVotingPeriod',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'newVotingPeriod',
+          type: 'uint256',
+        },
+      ],
+      name: 'VotingPeriodSet',
+      type: 'event',
+    },
+    {
       inputs: [],
       name: 'BALLOT_TYPEHASH',
       outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
@@ -208,9 +412,49 @@ export const GovernorContract = {
     },
     {
       inputs: [],
+      name: 'CLOCK_MODE',
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
       name: 'COUNTING_MODE',
       outputs: [{ internalType: 'string', name: '', type: 'string' }],
       stateMutability: 'pure',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'EXTENDED_BALLOT_TYPEHASH',
+      outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'PROPOSE_GUARDIAN',
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'VETO_GUARDIAN',
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'address[]', name: '_targets', type: 'address[]' },
+        { internalType: 'uint256[]', name: '_values', type: 'uint256[]' },
+        { internalType: 'bytes[]', name: '_calldatas', type: 'bytes[]' },
+        { internalType: 'bytes32', name: '_descriptionHash', type: 'bytes32' },
+      ],
+      name: 'cancel',
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+      stateMutability: 'nonpayable',
       type: 'function',
     },
     {
@@ -249,6 +493,55 @@ export const GovernorContract = {
     },
     {
       inputs: [
+        { internalType: 'uint256', name: 'proposalId', type: 'uint256' },
+        { internalType: 'uint8', name: 'support', type: 'uint8' },
+        { internalType: 'string', name: 'reason', type: 'string' },
+        { internalType: 'bytes', name: 'params', type: 'bytes' },
+      ],
+      name: 'castVoteWithReasonAndParams',
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'uint256', name: '_proposalId', type: 'uint256' },
+        { internalType: 'uint8', name: '_support', type: 'uint8' },
+        { internalType: 'string', name: '_reason', type: 'string' },
+        { internalType: 'bytes', name: '_params', type: 'bytes' },
+        { internalType: 'uint8', name: '_v', type: 'uint8' },
+        { internalType: 'bytes32', name: '_r', type: 'bytes32' },
+        { internalType: 'bytes32', name: '_s', type: 'bytes32' },
+      ],
+      name: 'castVoteWithReasonAndParamsBySig',
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'clock',
+      outputs: [{ internalType: 'uint48', name: '', type: 'uint48' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'eip712Domain',
+      outputs: [
+        { internalType: 'bytes1', name: 'fields', type: 'bytes1' },
+        { internalType: 'string', name: 'name', type: 'string' },
+        { internalType: 'string', name: 'version', type: 'string' },
+        { internalType: 'uint256', name: 'chainId', type: 'uint256' },
+        { internalType: 'address', name: 'verifyingContract', type: 'address' },
+        { internalType: 'bytes32', name: 'salt', type: 'bytes32' },
+        { internalType: 'uint256[]', name: 'extensions', type: 'uint256[]' },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
         { internalType: 'address[]', name: 'targets', type: 'address[]' },
         { internalType: 'uint256[]', name: 'values', type: 'uint256[]' },
         { internalType: 'bytes[]', name: 'calldatas', type: 'bytes[]' },
@@ -260,11 +553,29 @@ export const GovernorContract = {
       type: 'function',
     },
     {
+      inputs: [{ internalType: 'address', name: '', type: 'address' }],
+      name: 'fractionalVoteNonce',
+      outputs: [{ internalType: 'uint128', name: '', type: 'uint128' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [
         { internalType: 'address', name: 'account', type: 'address' },
-        { internalType: 'uint256', name: 'blockNumber', type: 'uint256' },
+        { internalType: 'uint256', name: 'timepoint', type: 'uint256' },
       ],
       name: 'getVotes',
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'address', name: 'account', type: 'address' },
+        { internalType: 'uint256', name: 'timepoint', type: 'uint256' },
+        { internalType: 'bytes', name: 'params', type: 'bytes' },
+      ],
+      name: 'getVotesWithParams',
       outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
       stateMutability: 'view',
       type: 'function',
@@ -293,6 +604,20 @@ export const GovernorContract = {
     },
     {
       inputs: [],
+      name: 'isProposeGuarded',
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'lateQuorumVoteExtension',
+      outputs: [{ internalType: 'uint64', name: '', type: 'uint64' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
       name: 'name',
       outputs: [{ internalType: 'string', name: '', type: 'string' }],
       stateMutability: 'view',
@@ -300,7 +625,45 @@ export const GovernorContract = {
     },
     {
       inputs: [
-        { internalType: 'uint256', name: 'proposalId', type: 'uint256' },
+        { internalType: 'address', name: '', type: 'address' },
+        { internalType: 'address', name: '', type: 'address' },
+        { internalType: 'uint256[]', name: '', type: 'uint256[]' },
+        { internalType: 'uint256[]', name: '', type: 'uint256[]' },
+        { internalType: 'bytes', name: '', type: 'bytes' },
+      ],
+      name: 'onERC1155BatchReceived',
+      outputs: [{ internalType: 'bytes4', name: '', type: 'bytes4' }],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'address', name: '', type: 'address' },
+        { internalType: 'address', name: '', type: 'address' },
+        { internalType: 'uint256', name: '', type: 'uint256' },
+        { internalType: 'uint256', name: '', type: 'uint256' },
+        { internalType: 'bytes', name: '', type: 'bytes' },
+      ],
+      name: 'onERC1155Received',
+      outputs: [{ internalType: 'bytes4', name: '', type: 'bytes4' }],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'address', name: '', type: 'address' },
+        { internalType: 'address', name: '', type: 'address' },
+        { internalType: 'uint256', name: '', type: 'uint256' },
+        { internalType: 'bytes', name: '', type: 'bytes' },
+      ],
+      name: 'onERC721Received',
+      outputs: [{ internalType: 'bytes4', name: '', type: 'bytes4' }],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'uint256', name: '_proposalId', type: 'uint256' },
       ],
       name: 'proposalDeadline',
       outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
@@ -320,6 +683,15 @@ export const GovernorContract = {
       inputs: [
         { internalType: 'uint256', name: 'proposalId', type: 'uint256' },
       ],
+      name: 'proposalProposer',
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'uint256', name: 'proposalId', type: 'uint256' },
+      ],
       name: 'proposalSnapshot',
       outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
       stateMutability: 'view',
@@ -329,7 +701,7 @@ export const GovernorContract = {
       inputs: [],
       name: 'proposalThreshold',
       outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-      stateMutability: 'pure',
+      stateMutability: 'view',
       type: 'function',
     },
     {
@@ -371,7 +743,7 @@ export const GovernorContract = {
     },
     {
       inputs: [
-        { internalType: 'uint256', name: 'blockNumber', type: 'uint256' },
+        { internalType: 'uint256', name: '_voteStart', type: 'uint256' },
       ],
       name: 'quorum',
       outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
@@ -379,22 +751,75 @@ export const GovernorContract = {
       type: 'function',
     },
     {
-      inputs: [],
-      name: 'quorumDenominator',
-      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-      stateMutability: 'pure',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'quorumNumerator',
-      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-      stateMutability: 'view',
+      inputs: [
+        { internalType: 'address', name: 'target', type: 'address' },
+        { internalType: 'uint256', name: 'value', type: 'uint256' },
+        { internalType: 'bytes', name: 'data', type: 'bytes' },
+      ],
+      name: 'relay',
+      outputs: [],
+      stateMutability: 'payable',
       type: 'function',
     },
     {
       inputs: [
-        { internalType: 'uint256', name: 'proposalId', type: 'uint256' },
+        { internalType: 'bool', name: '_isProposeGuarded', type: 'bool' },
+      ],
+      name: 'setIsProposeGuarded',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'uint64', name: 'newVoteExtension', type: 'uint64' },
+      ],
+      name: 'setLateQuorumVoteExtension',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'newProposalThreshold',
+          type: 'uint256',
+        },
+      ],
+      name: 'setProposalThreshold',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [{ internalType: 'uint224', name: '_amount', type: 'uint224' }],
+      name: 'setQuorum',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'uint256', name: 'newVotingDelay', type: 'uint256' },
+      ],
+      name: 'setVotingDelay',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'uint256', name: 'newVotingPeriod', type: 'uint256' },
+      ],
+      name: 'setVotingPeriod',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'uint256', name: '_proposalId', type: 'uint256' },
       ],
       name: 'state',
       outputs: [
@@ -408,7 +833,9 @@ export const GovernorContract = {
       type: 'function',
     },
     {
-      inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
+      inputs: [
+        { internalType: 'bytes4', name: '_interfaceId', type: 'bytes4' },
+      ],
       name: 'supportsInterface',
       outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
       stateMutability: 'view',
@@ -425,22 +852,9 @@ export const GovernorContract = {
       inputs: [],
       name: 'token',
       outputs: [
-        { internalType: 'contract ERC20Votes', name: '', type: 'address' },
+        { internalType: 'contract IERC5805', name: '', type: 'address' },
       ],
       stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'newQuorumNumerator',
-          type: 'uint256',
-        },
-      ],
-      name: 'updateQuorumNumerator',
-      outputs: [],
-      stateMutability: 'nonpayable',
       type: 'function',
     },
     {
@@ -464,18 +878,29 @@ export const GovernorContract = {
       type: 'function',
     },
     {
+      inputs: [
+        { internalType: 'uint256', name: 'proposalId', type: 'uint256' },
+        { internalType: 'address', name: 'account', type: 'address' },
+      ],
+      name: 'voteWeightCast',
+      outputs: [{ internalType: 'uint128', name: '', type: 'uint128' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [],
       name: 'votingDelay',
       outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-      stateMutability: 'pure',
+      stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [],
       name: 'votingPeriod',
       outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-      stateMutability: 'pure',
+      stateMutability: 'view',
       type: 'function',
     },
+    { stateMutability: 'payable', type: 'receive' },
   ],
 } as const

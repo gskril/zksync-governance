@@ -8,7 +8,6 @@ import {
   proposalCreatedEvent,
   proposalExecutedEvent,
   proposalQueuedEvent,
-  quorumNumeratorUpdatedEvent,
   timelockChangeEvent,
   voteCastEvent,
 } from '../ponder.schema'
@@ -34,18 +33,6 @@ ponder.on('Governor:ProposalCreated', async ({ event, context }) => {
     values: replaceBigInts(event.args.values, (v) => String(v)),
   })
 
-  // Delay, in blocks, between the proposal is created and the vote starts
-  const votingDelay = await context.client.readContract({
-    ...context.contracts.Governor,
-    functionName: 'votingDelay',
-  })
-
-  // Delay, in blocks, between the vote start and vote ends
-  const votingPeriod = await context.client.readContract({
-    ...context.contracts.Governor,
-    functionName: 'votingPeriod',
-  })
-
   // Minimum number of cast voted required for a proposal to be successful
   const quorum = await context.client.readContract({
     ...context.contracts.Governor,
@@ -53,29 +40,20 @@ ponder.on('Governor:ProposalCreated', async ({ event, context }) => {
     args: [event.block.number - 1n],
   })
 
-  // Assume 12 second block time
-  const blockTime = 12
-  const startTimestamp = Math.floor(
-    Number(event.block.timestamp) + Number(votingDelay) * blockTime
-  )
-  const endTimestamp = Math.floor(
-    startTimestamp + Number(votingPeriod) * blockTime
-  )
-
   await context.db.insert(proposal).values({
     ...event.args,
     id: event.args.proposalId,
     title: getTitle(event.args.description),
     createdAtBlock: event.block.number,
     createdAtTimestamp: event.block.timestamp,
-    startTimestamp: BigInt(startTimestamp),
-    endTimestamp: BigInt(endTimestamp),
     quorum,
     forVotes: 0n,
     againstVotes: 0n,
     abstainVotes: 0n,
     createTransaction: event.transaction.hash,
     descriptionHash: keccak256(toHex(event.args.description)),
+    startTimestamp: event.block.timestamp,
+    endTimestamp: event.block.timestamp,
 
     // Format raw args
     values: replaceBigInts(event.args.values, (v) => String(v)),
@@ -106,14 +84,6 @@ ponder.on('Governor:ProposalQueued', async ({ event, context }) => {
 
   await context.db.update(proposal, { id: event.args.proposalId }).set({
     queuedAtTimestamp: event.block.timestamp,
-  })
-})
-
-ponder.on('Governor:QuorumNumeratorUpdated', async ({ event, context }) => {
-  await context.db.insert(quorumNumeratorUpdatedEvent).values({
-    ...event.args,
-    id: event.id,
-    timestamp: event.block.timestamp,
   })
 })
 
