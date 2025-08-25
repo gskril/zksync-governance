@@ -56,6 +56,16 @@ export const proposalCreatedEvent = onchainTable(
   })
 )
 
+export const proposalExtendedEvent = onchainTable(
+  'proposalExtendedEvent',
+  (t) => ({
+    id: t.text().primaryKey(),
+    timestamp: t.bigint().notNull(),
+    proposalId: t.bigint().notNull(),
+    extendedDeadline: t.bigint().notNull(),
+  })
+)
+
 export const proposalExecutedEvent = onchainTable(
   'proposalExecutedEvent',
   (t) => ({

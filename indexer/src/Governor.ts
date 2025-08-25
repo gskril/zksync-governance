@@ -5,6 +5,7 @@ import {
   proposalCanceledEvent,
   proposalCreatedEvent,
   proposalExecutedEvent,
+  proposalExtendedEvent,
   proposalQueuedEvent,
   timelockChangeEvent,
   voteCastEvent,
@@ -59,6 +60,18 @@ ponder.on('Governor:ProposalCreated', async ({ event, context }) => {
     // Format raw args
     values: replaceBigInts(event.args.values, (v) => String(v)),
     description: removeTitle(event.args.description),
+  })
+})
+
+ponder.on('Governor:ProposalExtended', async ({ event, context }) => {
+  await context.db.insert(proposalExtendedEvent).values({
+    ...event.args,
+    id: event.id,
+    timestamp: event.block.timestamp,
+  })
+
+  await context.db.update(proposal, { id: event.args.proposalId }).set({
+    endTimestamp: event.args.extendedDeadline,
   })
 })
 
