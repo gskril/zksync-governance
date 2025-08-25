@@ -3,6 +3,7 @@ import { Hono } from 'hono'
 import { graphql } from 'ponder'
 import { db } from 'ponder:api'
 import schema from 'ponder:schema'
+import { parseUnits } from 'viem'
 
 import { getPropQuorumReached } from '../utils'
 import { getPropStatus } from '../utils'
@@ -31,6 +32,7 @@ app.get('/proposals', async (c) => {
   return c.json(replaceBigInts(propsWithStatus, (v) => String(v)))
 })
 
+// TODO: Implement pagination of voters
 app.get('/proposals/:proposalId', async (c) => {
   const proposalId = c.req.param('proposalId')
   const prop = await db.query.proposal.findFirst({
@@ -38,6 +40,7 @@ app.get('/proposals/:proposalId', async (c) => {
     with: {
       votes: {
         orderBy: (cols, { desc }) => [desc(cols.weight)],
+        where: (cols, { gte }) => gte(cols.weight, parseUnits('5000', 18)),
       },
     },
   })
