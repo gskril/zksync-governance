@@ -1,5 +1,4 @@
-import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useAccount, useDisconnect, useEnsName } from 'wagmi'
+import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
 
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
@@ -11,7 +10,7 @@ import {
 import { cn, nameWithFallback } from '@/lib/utils'
 
 export function ConnectButton() {
-  const { openConnectModal } = useConnectModal()
+  const { connect, connectors } = useConnect()
   const { disconnect } = useDisconnect()
 
   const { address } = useAccount()
@@ -47,7 +46,10 @@ export function ConnectButton() {
   }
 
   return (
-    <Button className="rounded-full px-4" onClick={openConnectModal}>
+    <Button
+      className="rounded-full px-4"
+      onClick={() => connect({ connector: connectors[0] })}
+    >
       Connect Wallet
     </Button>
   )
