@@ -56,6 +56,7 @@ ponder.on('Governor:ProposalCreated', async ({ event, context }) => {
     descriptionHash: keccak256(toHex(event.args.description)),
     startTimestamp: event.block.timestamp,
     endTimestamp: event.block.timestamp,
+    governor: event.log.address,
 
     // Format raw args
     values: replaceBigInts(event.args.values, (v) => String(v)),

@@ -1,4 +1,4 @@
-import { GovernorContract } from 'indexer/contracts'
+import { ZkTokenGovernor as GovernorContract } from 'indexer/contracts'
 import { EnhancedProposal } from 'indexer/types'
 import { useEffect } from 'react'
 import {
@@ -34,13 +34,15 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
   const multicall = useReadContracts({
     contracts: [
       {
-        ...GovernorContract,
+        address: proposal.governor,
+        abi: GovernorContract.abi,
         functionName: 'hasVoted',
         // @ts-expect-error: the query is not run until the address and blockNumber are known
         args: [BigInt(proposal.id), address],
       },
       {
-        ...GovernorContract,
+        address: proposal.governor,
+        abi: GovernorContract.abi,
         functionName: 'getVotes',
         // @ts-expect-error: the query is not run until the address and blockNumber are known
         args: [address, (blockNumber ?? BigInt(0)) - BigInt(1)],
@@ -74,13 +76,15 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
 
     if (reason) {
       tx.writeContract({
-        ...GovernorContract,
+        address: proposal.governor,
+        abi: GovernorContract.abi,
         functionName: 'castVoteWithReason',
         args: [BigInt(proposal.id), choice, reason],
       })
     } else {
       tx.writeContract({
-        ...GovernorContract,
+        address: proposal.governor,
+        abi: GovernorContract.abi,
         functionName: 'castVote',
         args: [BigInt(proposal.id), choice],
       })

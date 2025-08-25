@@ -1,6 +1,6 @@
 'use client'
 
-import { GovernorContract } from 'indexer/contracts'
+import { ZkTokenGovernor as GovernorContract } from 'indexer/contracts'
 import { EnhancedProposal } from 'indexer/types'
 import {
   useAccount,
@@ -24,7 +24,8 @@ export function ProposalActionButton({ proposal, action }: Props) {
   const receipt = useWaitForTransactionReceipt({ hash: tx.data })
 
   const data = {
-    ...GovernorContract,
+    address: proposal.governor,
+    abi: GovernorContract.abi,
     functionName: action,
     args: [
       proposal.targets, // targets
