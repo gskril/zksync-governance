@@ -21,16 +21,8 @@ ponder.on('Token:DelegateChanged', async ({ event, context }) => {
     .onConflictDoUpdate({
       delegate: event.args.toDelegate,
     })
-
-  await context.db
-    .insert(account)
-    .values({
-      address: event.args.toDelegate,
-    })
-    .onConflictDoNothing()
 })
 
-// Fires after `DelegateChanged`
 ponder.on('Token:DelegateVotesChanged', async ({ event, context }) => {
   await context.db.insert(delegateVotesChangedEvent).values({
     ...event.args,
@@ -38,7 +30,14 @@ ponder.on('Token:DelegateVotesChanged', async ({ event, context }) => {
     timestamp: event.block.timestamp,
   })
 
-  await context.db.update(account, { address: event.args.delegate }).set({
-    votes: event.args.newBalance,
-  })
+  await context.db
+    .insert(account)
+    .values({
+      address: event.args.delegate,
+      votes: event.args.newBalance,
+    })
+    // Sometimes this event can be emitted without `DelegateChanged`
+    .onConflictDoUpdate({
+      votes: event.args.newBalance,
+    })
 })
