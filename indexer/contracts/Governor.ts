@@ -1,5 +1,4 @@
-// ZkTokenGovernor
-export const GovernorContract = {
+export const ZkTokenGovernor = {
   address: '0xb83FF6501214ddF40C91C9565d095400f3F45746',
   startBlock: 55519658, // When the contract was deployed, so Ponder knows where to start indexing
   abi: [
@@ -909,11 +908,11 @@ export const GovernorContract = {
 export const ZkProtocolGovernor = {
   address: '0x76705327e682F2d96943280D99464Ab61219e34f',
   startBlock: 41196850,
-  abi: GovernorContract.abi,
+  abi: ZkTokenGovernor.abi,
 } as const
 
 export const ZkGovOpsGovernor = {
   address: '0xEEEa739a8b6fB1b8f703E23C9Be03CeeA643b160',
   startBlock: 55500650,
-  abi: GovernorContract.abi,
+  abi: ZkTokenGovernor.abi,
 } as const

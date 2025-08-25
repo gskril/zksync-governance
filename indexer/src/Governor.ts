@@ -1,7 +1,5 @@
 import { replaceBigInts } from '@ponder/utils'
 import { ponder } from 'ponder:registry'
-import { keccak256, toHex } from 'viem/utils'
-
 import {
   proposal,
   proposalCanceledEvent,
@@ -10,7 +8,9 @@ import {
   proposalQueuedEvent,
   timelockChangeEvent,
   voteCastEvent,
-} from '../ponder.schema'
+} from 'ponder:schema'
+import { keccak256, toHex } from 'viem/utils'
+
 import { getTitle, removeTitle } from './utils'
 
 ponder.on('Governor:ProposalCanceled', async ({ event, context }) => {

@@ -3,9 +3,10 @@ import { createConfig } from 'ponder'
 import { http } from 'viem'
 
 import {
-  GovernorContract,
   ZkGovOpsGovernor,
   ZkProtocolGovernor,
+  ZkToken,
+  ZkTokenGovernor,
 } from './contracts'
 
 export default createConfig({
@@ -13,7 +14,6 @@ export default createConfig({
     zkSync: {
       id: 324,
       rpc: loadBalance([
-        // http(process.env.PONDER_RPC_URL)
         http('https://mainnet.era.zksync.io'),
         http('https://1rpc.io/zksync2-era'),
         http('https://rpc.ankr.com/zksync_era'),
@@ -23,12 +23,19 @@ export default createConfig({
   contracts: {
     Governor: {
       address: [
-        GovernorContract.address,
+        ZkTokenGovernor.address,
         ZkProtocolGovernor.address,
         ZkGovOpsGovernor.address,
       ],
-      abi: GovernorContract.abi,
+      abi: ZkTokenGovernor.abi,
       chain: 'zkSync',
+      startBlock: ZkProtocolGovernor.startBlock, // earliest deployment of the 3 governors
+    },
+    Token: {
+      address: ZkToken.address,
+      abi: ZkToken.abi,
+      chain: 'zkSync',
+      startBlock: ZkToken.startBlock,
     },
   },
 })

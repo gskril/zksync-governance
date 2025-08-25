@@ -97,3 +97,31 @@ export const voteCastEventRelations = relations(voteCastEvent, ({ one }) => ({
     references: [proposal.id],
   }),
 }))
+
+export const account = onchainTable('account', (t) => ({
+  address: t.hex().primaryKey(),
+  delegate: t.hex(),
+  votes: t.bigint(),
+}))
+
+export const delegateChangedEvent = onchainTable(
+  'delegateChangedEvent',
+  (t) => ({
+    id: t.text().primaryKey(),
+    timestamp: t.bigint().notNull(),
+    delegator: t.hex().notNull(),
+    fromDelegate: t.hex().notNull(),
+    toDelegate: t.hex().notNull(),
+  })
+)
+
+export const delegateVotesChangedEvent = onchainTable(
+  'delegateVotesChangedEvent',
+  (t) => ({
+    id: t.text().primaryKey(),
+    timestamp: t.bigint().notNull(),
+    delegate: t.hex().notNull(),
+    previousBalance: t.bigint().notNull(),
+    newBalance: t.bigint().notNull(),
+  })
+)
