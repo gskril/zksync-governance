@@ -1,17 +1,29 @@
 import { EnhancedProposalWithVotes } from 'indexer/types'
+import { useInView } from 'react-intersection-observer'
 import { useEnsName } from 'wagmi'
 
 import { bigintToFormattedString, cn, nameWithFallback } from '@/lib/utils'
-
-import { Typography } from './ui/typography'
+import { Typography } from '@/components/ui/typography'
 
 type Props = { vote: EnhancedProposalWithVotes['votes'][number] }
 
 export function ProposalVote({ vote }: Props) {
-  const { data: ensName } = useEnsName({ address: vote.voter, chainId: 1 })
+  const { ref, inView } = useInView({
+    rootMargin: '100px',
+    threshold: 0.1,
+    triggerOnce: true, // Only trigger once when it comes into view
+  })
+
+  const { data: ensName } = useEnsName({
+    address: vote.voter,
+    chainId: 1,
+    query: {
+      enabled: inView, // Only run the query when the component is in viewport
+    },
+  })
 
   return (
-    <div key={vote.id} className="space-y-1.5 text-sm font-medium">
+    <div ref={ref} key={vote.id} className="space-y-1.5 text-sm font-medium">
       <div className="flex w-full justify-between gap-4">
         <div className="flex items-center gap-1">
           <img
