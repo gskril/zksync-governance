@@ -91,6 +91,7 @@ export function Proposal() {
               <div className="mx-1.5 flex items-center gap-1">
                 {proposerEnsName && (
                   <img
+                    loading="lazy"
                     src={`https://ens-api.gregskril.com/avatar/${proposerEnsName}?width=48`}
                     alt={proposerEnsName}
                     className="size-6 rounded-full object-cover"
