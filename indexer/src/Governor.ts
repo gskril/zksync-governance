@@ -54,8 +54,8 @@ ponder.on('Governor:ProposalCreated', async ({ event, context }) => {
     abstainVotes: 0n,
     createTransaction: event.transaction.hash,
     descriptionHash: keccak256(toHex(event.args.description)),
-    startTimestamp: event.block.timestamp,
-    endTimestamp: event.block.timestamp,
+    startTimestamp: event.args.voteStart,
+    endTimestamp: event.args.voteEnd,
     governor: event.log.address,
 
     // Format raw args
