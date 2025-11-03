@@ -3,6 +3,7 @@
   "private": true,
   "packageManager": "bun@1.2.8",
   "workspaces": [
+    "./web",
     "./client",
     "./shared",
     "./indexer"
