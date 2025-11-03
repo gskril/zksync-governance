@@ -1,35 +1,20 @@
 {
   "name": "zksync-governance",
   "private": true,
-  "packageManager": "bun@1.2.4",
+  "packageManager": "bun@1.2.8",
   "workspaces": [
-    "./server",
     "./client",
     "./shared",
     "./indexer"
   ],
   "scripts": {
-    "dev": "turbo dev",
-    "dev:client": "turbo dev --filter=client",
-    "dev:server": "turbo dev --filter=server",
-    "dev:indexer": "turbo dev --filter=indexer",
-    "build": "turbo build",
-    "build:client": "turbo build --filter=client",
-    "build:server": "turbo build --filter=server",
-    "build:indexer": "turbo build --filter=indexer",
-    "lint": "turbo lint",
-    "type-check": "turbo type-check",
-    "test": "turbo test",
-    "postinstall": "turbo build --filter=shared --filter=server --filter=indexer",
-    "deploy": "turbo build && wrangler deploy --minify"
+    "dev:web": "bun --filter=web run dev",
+    "dev:indexer": "bun --filter=indexer run dev"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250805.0",
-    "bun-types": "latest",
-    "turbo": "^2.5.5",
-    "wrangler": "^4.27.0"
+    "bun-types": "1.2.8"
   },
   "peerDependencies": {
-    "typescript": "^5.7.3"
+    "typescript": "5.9.3"
   }
 }
