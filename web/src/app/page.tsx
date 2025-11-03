@@ -1,65 +1,165 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { Footer } from '@/components/Footer'
+import { ProposalStatus } from '@/components/ProposalStatus'
+import { DiscourseIcon, XIcon } from '@/components/icons'
+import { IconWrapper } from '@/components/icons/IconWrapper'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { getProposals } from '@/hooks/useProposals'
+import {
+  bigintToFormattedString,
+  formatTimestamp,
+  getPercentageOfTotalVotes,
+  getTotalVotes,
+} from '@/lib/utils'
 
-export default function Home() {
+// Invalidate the cache when a request comes in, at most once every 10 seconds.
+export const revalidate = 10
+
+export default async function Home() {
+  const proposals = await getProposals()
+
+  if (!proposals || proposals.length === 0) {
+    return <div>Error fetching proposals :/</div>
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="container">
+      <div className="mb-8 mt-6">
+        <div className="flex flex-col justify-between gap-3 md:flex-row md:gap-12">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+            <img
+              src="/img/logo-filled.png"
+              alt="ZKsync Logo"
+              width={160}
+              height={160}
+              className="w-28 -rotate-3 rounded-3xl border-4 border-white shadow-[0_0_22px_0_#00000029] md:w-40"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+            <div className="space-y-3">
+              <h1 className="space-y-3">
+                <span className="line block text-2xl font-semibold leading-none text-primary-brand">
+                  ZKsync
+                </span>{' '}
+                <span className="block text-3xl font-bold leading-none lg:text-5xl">
+                  Governance
+                </span>
+              </h1>
+
+              <h2 className="text-base font-medium text-zinc-500">
+                View and vote on proposals in the ZKsync Governance System.
+              </h2>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <IconWrapper href="https://x.com/ENS_DAO" icon={<XIcon />} />
+            <IconWrapper
+              href="https://discuss.ens.domains"
+              icon={<DiscourseIcon />}
+              text="Forum"
+            />
+          </div>
         </div>
-      </main>
+      </div>
+
+      <div className="shadow-custom-card rounded-xl border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-36">Created</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead className="hidden w-36 lg:table-cell">
+                Status
+              </TableHead>
+              <TableHead className="hidden w-24 text-right md:table-cell">
+                Votes
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {(() => {
+              const Row = ({ text }: { text: string }) => (
+                <TableRow className="h-[50vh] animate-pulse">
+                  <TableCell colSpan={4} className="text-center">
+                    {text}
+                  </TableCell>
+                </TableRow>
+              )
+
+              if (!proposals) {
+                return <Row text="Loading..." />
+              }
+
+              if (proposals.length === 0) {
+                return <Row text="No proposals found" />
+              }
+            })()}
+
+            {proposals?.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center">
+                  No proposals found
+                </TableCell>
+              </TableRow>
+            )}
+
+            {proposals?.map((proposal) => (
+              <TableRow key={proposal.id} className="group">
+                <TableCell className="space-y-0.5">
+                  <ProposalStatus
+                    proposal={proposal}
+                    className="table-cell lg:hidden"
+                  />
+
+                  <span className="block">
+                    {formatTimestamp(proposal.createdAtTimestamp)}
+                  </span>
+                </TableCell>
+                {/* Not sure why max-w-0 is needed here, but it seems to work fine in all browsers */}
+                <TableCell className="md:max-w-0 md:truncate">
+                  <Link
+                    href={`/proposal/${proposal.id}`}
+                    className="font-medium hover:underline group-hover:text-primary-brand"
+                  >
+                    {proposal.title}
+                  </Link>
+                </TableCell>
+                <TableCell className="hidden lg:table-cell">
+                  <ProposalStatus proposal={proposal} />
+                </TableCell>
+                <TableCell className="hidden text-right md:table-cell">
+                  <span className="block pb-1">
+                    {bigintToFormattedString(getTotalVotes(proposal))}
+                  </span>
+
+                  <div className="flex items-center gap-1 text-xs font-semibold leading-none">
+                    <span className="text-green-600">
+                      {getPercentageOfTotalVotes(proposal.forVotes, proposal)}%
+                    </span>
+                    <span className="text-zinc-200">|</span>
+                    <span className="text-destructive">
+                      {getPercentageOfTotalVotes(
+                        proposal.againstVotes,
+                        proposal
+                      )}
+                      %
+                    </span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <Footer />
     </div>
-  );
+  )
 }

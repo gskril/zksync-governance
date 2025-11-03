@@ -2,4 +2,4 @@
 
 View and participate in ZKsync governance.
 
-See [indexer](./indexer/README.md) and [client](./client/README.md) for technical details.
+See [indexer](./indexer/README.md) and [web](./web/README.md) for technical details.

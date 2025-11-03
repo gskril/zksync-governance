@@ -1,3 +1,5 @@
+'use client'
+
 import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
 
 import { Button, buttonVariants } from '@/components/ui/button'

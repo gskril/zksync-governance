@@ -4,13 +4,13 @@
   "packageManager": "bun@1.2.8",
   "workspaces": [
     "./web",
-    "./client",
     "./shared",
     "./indexer"
   ],
   "scripts": {
     "dev:web": "bun --filter=web run dev",
-    "dev:indexer": "bun --filter=indexer run dev"
+    "dev:indexer": "bun --filter=indexer run dev",
+    "postinstall": "bun --filter=indexer run build"
   },
   "devDependencies": {
     "bun-types": "1.2.8"

@@ -1,8 +1,6 @@
-'use client'
-
 import { EnhancedProposalWithVotes } from 'indexer/types'
 import { ArrowDown, ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useEnsName } from 'wagmi'
@@ -35,30 +33,25 @@ import {
   parseVotes,
 } from '@/lib/utils'
 import { useParams } from 'react-router-dom'
-import { useProposal } from '@/hooks/useProposal'
+import { getProposal, useProposal } from '@/hooks/useProposal'
 
-export function Proposal() {
-  const { id } = useParams()
-  const { data: proposal, error: proposalError } = useProposal(id as string)
-
-  const { data: proposerEnsName } = useEnsName({
-    address: proposal?.proposer,
-    chainId: 1,
-  })
-
-  if (proposalError) {
-    return <div>Error: {proposalError.message}</div>
-  }
+export default async function Proposal({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const proposal = await getProposal(id)
 
   if (!proposal) {
-    return <div>Loading...</div>
+    return <div>Error fetching proposal :/</div>
   }
 
   return (
     <div className="container">
       <div className="flex items-center justify-between">
         <Link
-          to="/"
+          href="/"
           className="flex w-fit items-center gap-2 font-semibold text-zinc-500"
         >
           <ArrowLeft className="size-5" />
@@ -89,21 +82,21 @@ export function Proposal() {
               <span className="hidden sm:block">Proposed by</span>
               <span className="block sm:hidden">By</span>
               <div className="mx-1.5 flex items-center gap-1">
-                {proposerEnsName && (
+                {/* {proposerEnsName && (
                   <img
                     loading="lazy"
                     src={`https://ens-api.gregskril.com/avatar/${proposerEnsName}?width=48`}
                     alt={proposerEnsName}
                     className="size-6 rounded-full object-cover"
                   />
-                )}
+                )} */}
                 <a
                   href={`https://etherscan.io/address/${proposal.proposer}`}
                   target="_blank"
                   rel="noreferrer"
                   className="font-semibold hover:underline"
                 >
-                  {nameWithFallback(proposerEnsName, proposal.proposer)}
+                  {nameWithFallback(undefined, proposal.proposer)}
                 </a>
               </div>
               <span className="hidden sm:block">

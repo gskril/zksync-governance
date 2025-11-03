@@ -1,6 +1,9 @@
+'use client'
+
+import { env } from '@/lib/env'
 import { useQuery } from '@tanstack/react-query'
 
-const url = new URL('/status', import.meta.env.VITE_PONDER_URL).toString()
+const url = new URL('/status', env.PONDER_URL).toString()
 
 export function IndexerStatus() {
   const { data } = useQuery({

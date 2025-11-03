@@ -1,3 +1,5 @@
+'use client'
+
 import { EnhancedProposalWithVotes } from 'indexer/types'
 import { useInView } from 'react-intersection-observer'
 import { useEnsName } from 'wagmi'

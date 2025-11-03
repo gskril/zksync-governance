@@ -1,3 +1,4 @@
+import { env } from '@/lib/env'
 import { useQuery } from '@tanstack/react-query'
 import { EnhancedProposal } from 'indexer/types'
 
@@ -13,7 +14,7 @@ export function useProposals() {
 
 export async function getProposals() {
   const path = '/proposals'
-  const url = new URL(path, import.meta.env.VITE_PONDER_URL).toString()
+  const url = new URL(path, env.PONDER_URL).toString()
 
   const response = await fetch(url)
   const json = await response.json()

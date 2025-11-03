@@ -1,3 +1,5 @@
+'use client'
+
 import { ZkTokenGovernor as GovernorContract } from 'indexer/contracts'
 import { EnhancedProposal } from 'indexer/types'
 import { useEffect } from 'react'
