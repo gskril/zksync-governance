@@ -14,6 +14,7 @@ import {
 import { getProposals } from '@/hooks/useProposals'
 import {
   bigintToFormattedString,
+  cn,
   formatTimestamp,
   getGovernorName,
   getPercentageOfTotalVotes,
@@ -21,6 +22,8 @@ import {
 } from '@/lib/utils'
 import { Nav } from '@/components/Nav'
 import { Typography } from '@/components/ui/typography'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { ChevronRight } from 'lucide-react'
 
 // Serve from cache but revalidate every 60 seconds (ISR)
 export const revalidate = 60
@@ -66,28 +69,18 @@ export default async function Home() {
           <TableHeader>
             <TableRow>
               <TableHead>Proposal</TableHead>
-              <TableHead className="hidden w-36 lg:table-cell">
+              <TableHead className="hidden w-36 md:table-cell">
                 Status
               </TableHead>
-              <TableHead className="hidden w-24 text-right md:table-cell">
+              <TableHead className="hidden w-24 text-right lg:table-cell">
                 Votes
               </TableHead>
+              <TableHead className="w-26 hidden lg:table-cell" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {proposals.map((proposal) => (
               <TableRow key={proposal.id} className="group">
-                {/* <TableCell className="space-y-0.5">
-                  <ProposalStatus
-                    proposal={proposal}
-                    className="table-cell lg:hidden"
-                  />
-
-                  <span className="block">
-                    {formatTimestamp(proposal.createdAtTimestamp)}
-                  </span>
-                </TableCell> */}
-
                 {/* Not sure why max-w-0 is needed here, but it seems to work fine in all browsers */}
                 <TableCell className="md:max-w-0">
                   <div className="flex flex-col gap-2">
@@ -112,15 +105,17 @@ export default async function Home() {
                     </Typography>
                   </div>
                 </TableCell>
-                <TableCell className="hidden lg:table-cell">
+
+                <TableCell className="hidden md:table-cell">
                   <ProposalStatus proposal={proposal} />
                 </TableCell>
-                <TableCell className="hidden text-right md:table-cell">
+
+                <TableCell className="hidden text-right lg:table-cell">
                   <span className="block pb-1">
                     {bigintToFormattedString(getTotalVotes(proposal))}
                   </span>
 
-                  <div className="flex items-center gap-1 text-xs font-semibold leading-none">
+                  <div className="flex items-center gap-1 text-xs font-semibold leading-none justify-end">
                     <span className="text-brand-green">
                       {getPercentageOfTotalVotes(proposal.forVotes, proposal)}%
                     </span>
@@ -133,6 +128,26 @@ export default async function Home() {
                       %
                     </span>
                   </div>
+                </TableCell>
+                <TableCell className="lg:table-cell hidden">
+                  {proposal.status === 'active' ? (
+                    <Link
+                      className={cn(
+                        buttonVariants({ variant: 'primary' }),
+                        'rounded-full w-fit flex items-center justify-center mx-auto'
+                      )}
+                      href={`/proposal/${proposal.id}`}
+                    >
+                      Vote
+                    </Link>
+                  ) : (
+                    <Link
+                      href={`/proposal/${proposal.id}`}
+                      className="w-full flex items-center justify-center"
+                    >
+                      <ChevronRight className="size-4" />
+                    </Link>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
