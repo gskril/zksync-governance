@@ -16,6 +16,7 @@ export const proposal = onchainTable('proposal', (t) => ({
   executeTransaction: t.hex(),
   descriptionHash: t.hex().notNull(),
   governor: t.hex().notNull(),
+  summary: t.text(),
 
   // Raw from contract
   proposer: t.hex().notNull(),

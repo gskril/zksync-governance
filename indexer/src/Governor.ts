@@ -12,7 +12,7 @@ import {
 } from 'ponder:schema'
 import { keccak256, toHex } from 'viem/utils'
 
-import { getTitle, removeTitle } from './utils'
+import { getSummary, getTitle, removeTitle } from './utils'
 
 ponder.on('Governor:ProposalCanceled', async ({ event, context }) => {
   await context.db.insert(proposalCanceledEvent).values({
@@ -54,6 +54,7 @@ ponder.on('Governor:ProposalCreated', async ({ event, context }) => {
     abstainVotes: 0n,
     createTransaction: event.transaction.hash,
     descriptionHash: keccak256(toHex(event.args.description)),
+    summary: getSummary(event.args.description),
     startTimestamp: event.args.voteStart,
     endTimestamp: event.args.voteEnd,
     governor: event.log.address,

@@ -20,6 +20,33 @@ export function removeTitle(description: string) {
   return description.slice(firstHeading?.raw.length)
 }
 
+// Extract the value of the "One Sentence Summary" row from the table at the beginning of proposals
+export function getSummary(description: string) {
+  const tokens = marked.lexer(description)
+  const firstTableToken = tokens.find((token) => token.type === 'table') as
+    | Tokens.Table
+    | undefined
+
+  if (!firstTableToken) {
+    return null
+  }
+
+  const rows = firstTableToken.rows.map((row) =>
+    row.map((cell) => cell.tokens as Tokens.Text[])
+  )
+
+  const oneSentenceSummaryRow = rows.find((row) => {
+    const text = row[0]?.[0]?.text?.trim().replace(/[:|\t]/g, '') || ''
+    return text === 'One Sentence Summary'
+  })
+
+  if (!oneSentenceSummaryRow) {
+    return null
+  }
+
+  return oneSentenceSummaryRow[1]?.[0]?.text ?? null
+}
+
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/governance/Governor.sol#L138
 export function getPropStatus(prop: typeof proposal.$inferSelect): Status {
   const currentTimestamp = new Date().getTime() / 1000
