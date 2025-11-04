@@ -7,6 +7,7 @@ import { parseUnits } from 'viem'
 
 import { getPropQuorumReached } from '../utils'
 import { getPropStatus } from '../utils'
+import { getDelegates } from './handlers'
 
 const app = new Hono()
 
@@ -61,6 +62,14 @@ app.get('/proposals/:proposalId', async (c) => {
   )
 
   return c.json(enhancedProposal)
+})
+
+app.get('/delegates', async (c) => {
+  const limit = 50
+  const offset = Number(c.req.query('offset')) ?? 0
+
+  const delegates = await getDelegates(limit, offset)
+  return c.json(replaceBigInts(delegates, (v) => String(v)))
 })
 
 export default app

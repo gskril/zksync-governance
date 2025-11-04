@@ -109,12 +109,21 @@ export const voteCastEventRelations = relations(voteCastEvent, ({ one }) => ({
     fields: [voteCastEvent.proposalId],
     references: [proposal.id],
   }),
+  account: one(account, {
+    fields: [voteCastEvent.voter],
+    references: [account.address],
+  }),
 }))
 
 export const account = onchainTable('account', (t) => ({
   address: t.hex().primaryKey(),
   delegate: t.hex(),
   votes: t.bigint(),
+}))
+
+// Add voteCastEvent relations to account
+export const accountRelations = relations(account, ({ many }) => ({
+  voteCasts: many(voteCastEvent),
 }))
 
 export const delegateChangedEvent = onchainTable(

@@ -1,6 +1,7 @@
 import type { Hex } from 'viem'
 
-import { proposal, voteCastEvent } from '../ponder.schema'
+import { account, proposal, voteCastEvent } from '../ponder.schema'
+import type { getDelegates } from './api/handlers'
 
 export type Status =
   | 'pending'
@@ -34,3 +35,7 @@ export type EnhancedProposal = ReplaceBigInts<typeof proposal.$inferSelect> & {
 export type EnhancedProposalWithVotes = EnhancedProposal & {
   votes: ReplaceBigInts<(typeof voteCastEvent.$inferSelect)[]>
 }
+
+export type GetDelegatesResponse = ReplaceBigInts<
+  Awaited<ReturnType<typeof getDelegates>>
+>
