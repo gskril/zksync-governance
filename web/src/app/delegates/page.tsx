@@ -22,12 +22,15 @@ import { Nav } from '@/components/Nav'
 import { Typography } from '@/components/ui/typography'
 import { buttonVariants } from '@/components/ui/button'
 import { ChevronRight } from 'lucide-react'
+import { getDelegates } from '@/hooks/useDelegates'
+import { GetDelegatesResponse } from 'indexer/types'
 
 // Serve from cache but revalidate every 60 seconds (ISR)
 export const revalidate = 60
 
-export default async function Home() {
-  const proposals = await getProposals()
+export default async function Delegates() {
+  // const delegates = await getDelegates()
+  const delegates: GetDelegatesResponse = []
 
   return (
     <div className="container">
@@ -50,13 +53,9 @@ export default async function Home() {
                   ZKsync
                 </span>{' '}
                 <span className="block text-3xl font-bold leading-none lg:text-5xl">
-                  Governance
+                  Delegates
                 </span>
               </h1>
-
-              <h2 className="text-base text-zinc-500">
-                View and vote on proposals in the ZKsync Governance System.
-              </h2>
             </div>
           </div>
         </div>
@@ -66,20 +65,19 @@ export default async function Home() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Proposal</TableHead>
+              <TableHead>Delegate</TableHead>
               <TableHead className="hidden w-36 md:table-cell">
-                Status
+                Voting Power
               </TableHead>
-              <TableHead className="hidden w-24 text-right lg:table-cell">
-                Votes
+              <TableHead className="hidden w-42 text-right lg:table-cell">
+                Vote History
               </TableHead>
               <TableHead className="w-26 hidden lg:table-cell" />
             </TableRow>
           </TableHeader>
           <TableBody>
-            {proposals.map((proposal) => (
+            {/* {proposals.map((proposal) => (
               <TableRow key={proposal.id} className="group">
-                {/* Not sure why max-w-0 is needed here, but it seems to work fine in all browsers */}
                 <TableCell className="md:max-w-0">
                   <div className="flex flex-col gap-2">
                     <Typography
@@ -148,7 +146,7 @@ export default async function Home() {
                   )}
                 </TableCell>
               </TableRow>
-            ))}
+            ))} */}
           </TableBody>
         </Table>
       </div>
