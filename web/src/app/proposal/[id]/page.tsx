@@ -1,18 +1,15 @@
 import { EnhancedProposalWithVotes } from 'indexer/types'
-import { ArrowDown, ArrowLeft, Copy } from 'lucide-react'
-import Link from 'next/link'
+import { ArrowDown } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { useEnsName } from 'wagmi'
 
-import { ConnectButton } from '@/components/ConnectButton'
 import { Footer } from '@/components/Footer'
 import { ProposalActionButton } from '@/components/ProposalActionButton'
 import { ProposalStatus } from '@/components/ProposalStatus'
 import { ProposalVote } from '@/components/ProposalVote'
 import { VoteBar } from '@/components/VoteBar'
 import { VoteButton } from '@/components/VoteButton'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -36,6 +33,20 @@ import {
 import { getProposal } from '@/hooks/useProposal'
 import { Nav } from '@/components/Nav'
 import { CopyButton } from '@/components/CopyButton'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const proposal = await getProposal(id)
+
+  return {
+    title: `${proposal.title} - ZKsync Governance`,
+    description: proposal.description,
+  }
+}
 
 export default async function Proposal({
   params,
