@@ -198,7 +198,7 @@ export default async function Proposal({
                         href={href}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-primary-brand underline"
+                        className="text-brand-primary underline"
                       >
                         {children}
                       </a>

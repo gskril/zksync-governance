@@ -34,7 +34,7 @@ export function IndexerStatus() {
 
   if (status && !isReady) {
     return (
-      <div className="w-full bg-primary-brand/5 p-2 text-center text-sm">
+      <div className="w-full bg-brand-primary/5 p-2 text-center text-sm">
         <span>
           Data is being indexed... Currently at{' '}
           {new Intl.DateTimeFormat('en-US', {

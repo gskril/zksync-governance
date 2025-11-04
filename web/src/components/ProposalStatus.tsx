@@ -16,12 +16,14 @@ export function ProposalStatus({ proposal, className }: Props) {
     'queued',
     'executed',
   ]
-  const failedBadge: EnhancedProposal['status'][] = ['canceled', 'defeated']
+  const failedBadge: EnhancedProposal['status'][] = ['defeated']
 
   if (successBadge.includes(proposal.status)) {
     variant = 'success'
   } else if (failedBadge.includes(proposal.status)) {
     variant = 'destructive'
+  } else if (proposal.status === 'canceled') {
+    variant = 'secondary'
   }
 
   return (

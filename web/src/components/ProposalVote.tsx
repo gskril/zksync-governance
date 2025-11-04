@@ -50,8 +50,8 @@ export function ProposalVote({ vote }: Props) {
           </a>
           <span
             className={cn(
-              vote.support === 0 && 'text-destructive',
-              vote.support === 1 && 'text-green-600',
+              vote.support === 0 && 'text-brand-red',
+              vote.support === 1 && 'text-brand-green',
               vote.support === 2 && 'text-zinc-500',
               'font-medium'
             )}
