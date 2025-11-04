@@ -32,7 +32,8 @@ import {
   nameWithFallback,
   parseVotes,
 } from '@/lib/utils'
-import { getProposal, useProposal } from '@/hooks/useProposal'
+import { getProposal } from '@/hooks/useProposal'
+import { Nav } from '@/components/Nav'
 
 export default async function Proposal({
   params,
@@ -48,20 +49,9 @@ export default async function Proposal({
 
   return (
     <div className="container">
-      <div className="flex items-center justify-between">
-        <Link
-          href="/"
-          className="flex w-fit items-center gap-2 font-semibold text-zinc-500"
-        >
-          <ArrowLeft className="size-5" />
-          <span className="hidden sm:block">All Proposals</span>
-          <span className="block sm:hidden">Home</span>
-        </Link>
+      <Nav />
 
-        <ConnectButton />
-      </div>
-
-      <div className="grid items-center gap-6 py-4 lg:grid-cols-[2fr_1fr]">
+      <div className="grid items-center gap-6 pb-4 lg:grid-cols-[2fr_1fr]">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <ProposalStatus proposal={proposal} />

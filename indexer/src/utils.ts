@@ -16,8 +16,22 @@ export function getTitle(description: string) {
 }
 
 export function removeTitle(description: string) {
-  const firstHeading = getFirstHeadingToken(description)
-  return description.slice(firstHeading?.raw.length)
+  const allTokens = marked.lexer(description)
+  const firstHeadingToken = getFirstHeadingToken(description)
+
+  const newTokens = []
+
+  for (const token of allTokens) {
+    if (
+      token.type !== firstHeadingToken?.type ||
+      token.depth !== firstHeadingToken?.depth ||
+      token.text !== firstHeadingToken?.text
+    ) {
+      newTokens.push(token)
+    }
+  }
+
+  return newTokens.map((token) => token.raw).join('')
 }
 
 // Extract the value of the "One Sentence Summary" row from the table at the beginning of proposals
