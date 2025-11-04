@@ -32,7 +32,6 @@ import {
   nameWithFallback,
   parseVotes,
 } from '@/lib/utils'
-import { useParams } from 'react-router-dom'
 import { getProposal, useProposal } from '@/hooks/useProposal'
 
 export default async function Proposal({
