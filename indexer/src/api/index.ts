@@ -3,11 +3,11 @@ import { Hono } from 'hono'
 import { graphql } from 'ponder'
 import { db } from 'ponder:api'
 import schema from 'ponder:schema'
-import { parseUnits } from 'viem'
+import { getAddress, parseUnits } from 'viem'
 
 import { getPropQuorumReached } from '../utils'
 import { getPropStatus } from '../utils'
-import { getDelegates } from './handlers'
+import { getDelegate, getDelegates } from './handlers'
 
 const app = new Hono()
 
@@ -70,6 +70,15 @@ app.get('/delegates', async (c) => {
 
   const delegates = await getDelegates(limit, offset)
   return c.json(replaceBigInts(delegates, (v) => String(v)))
+})
+
+app.get('/delegates/:address', async (c) => {
+  const address = getAddress(c.req.param('address'))
+  const delegate = await getDelegate(address)
+  if (!delegate) {
+    return c.json({ error: 'Delegate not found' }, 404)
+  }
+  return c.json(replaceBigInts(delegate, (v) => String(v)))
 })
 
 export default app

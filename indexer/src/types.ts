@@ -1,7 +1,7 @@
 import type { Hex } from 'viem'
 
 import { account, proposal, voteCastEvent } from '../ponder.schema'
-import type { getDelegates } from './api/handlers'
+import type { getDelegate, getDelegates } from './api/handlers'
 
 export type Status =
   | 'pending'
@@ -38,4 +38,8 @@ export type EnhancedProposalWithVotes = EnhancedProposal & {
 
 export type GetDelegatesResponse = ReplaceBigInts<
   Awaited<ReturnType<typeof getDelegates>>
+>
+
+export type GetDelegateResponse = ReplaceBigInts<
+  Awaited<ReturnType<typeof getDelegate>>
 >
