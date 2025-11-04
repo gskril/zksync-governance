@@ -6,15 +6,19 @@ import { useEnsName } from 'wagmi'
 
 import { bigintToFormattedString, cn, nameWithFallback } from '@/lib/utils'
 import { Typography } from '@/components/ui/typography'
+import { delegateNames } from '@/lib/names'
 
 type Props = { vote: EnhancedProposalWithVotes['votes'][number] }
 
 export function ProposalVote({ vote }: Props) {
+  // TODO: Find a way to do this in batches so we can take advantage of multicall
   const { ref, inView } = useInView({
     rootMargin: '100px',
-    threshold: 0.1,
+    threshold: 0.5,
     triggerOnce: true, // Only trigger once when it comes into view
   })
+
+  const manualName = delegateNames[vote.voter]
 
   const { data: ensName } = useEnsName({
     address: vote.voter,
@@ -46,7 +50,7 @@ export function ProposalVote({ vote }: Props) {
             target="_blank"
             rel="noreferrer"
           >
-            {nameWithFallback(ensName, vote.voter)}
+            {nameWithFallback(manualName || ensName, vote.voter)}
           </a>
           <span
             className={cn(
