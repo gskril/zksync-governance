@@ -1,4 +1,4 @@
-const vercelUrl = process.env.VERCEL_URL
+const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL
 
 export const env = {
   PONDER_URL: process.env.NEXT_PUBLIC_PONDER_URL!,
