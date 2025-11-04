@@ -15,7 +15,6 @@ app.use('/graphql', graphql({ db, schema }))
 
 app.get('/proposals', async (c) => {
   const props = await db.query.proposal.findMany({
-    limit: 50,
     orderBy: (table, { desc }) => [desc(table.createdAtBlock)],
   })
 

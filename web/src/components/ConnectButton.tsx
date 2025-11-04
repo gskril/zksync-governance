@@ -1,6 +1,6 @@
 'use client'
 
-import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
+import { useAccount, useDisconnect, useEnsName } from 'wagmi'
 
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
@@ -10,21 +10,25 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn, nameWithFallback } from '@/lib/utils'
+import { Wallet } from 'lucide-react'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useMounted } from '@/hooks/useMounted'
 
 export function ConnectButton() {
-  const { connect, connectors } = useConnect()
   const { disconnect } = useDisconnect()
+  const { openConnectModal } = useConnectModal()
+  const isMounted = useMounted()
 
   const { address } = useAccount()
   const { data: ensName } = useEnsName({ address, chainId: 1 })
 
-  if (address) {
+  if (address && isMounted) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger
           className={cn(
             buttonVariants({}),
-            'h-fit gap-1.5 rounded-full bg-primary pb-1 pl-1 pr-4 pt-1 text-primary-foreground hover:bg-primary/90'
+            'border h-fit gap-1.5 rounded-full bg-white pb-1 pl-1 pr-4 pt-1 text-foreground hover:bg-white/90'
           )}
         >
           <img
@@ -50,9 +54,11 @@ export function ConnectButton() {
   return (
     <Button
       className="rounded-full px-4"
-      onClick={() => connect({ connector: connectors[0] })}
+      variant="primary"
+      onClick={() => openConnectModal?.()}
     >
-      Connect Wallet
+      <Wallet />
+      Connect
     </Button>
   )
 }

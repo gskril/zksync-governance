@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
 import { ClientProviders } from '@/components/ClientProviders'
 import { IndexerStatus } from '@/components/IndexerStatus'
+import '@rainbow-me/rainbowkit/styles.css'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,11 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ClientProviders>
-        <IndexerStatus />
-
-        <body className={`${inter.className} antialiased`}>{children}</body>
-      </ClientProviders>
+      <body className={`${inter.className} antialiased`}>
+        <ClientProviders>
+          <IndexerStatus />
+          {children}
+        </ClientProviders>
+      </body>
     </html>
   )
 }
