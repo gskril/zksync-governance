@@ -1,5 +1,5 @@
 import { EnhancedProposalWithVotes } from 'indexer/types'
-import { ArrowDown, ArrowLeft } from 'lucide-react'
+import { ArrowDown, ArrowLeft, Copy } from 'lucide-react'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -12,7 +12,7 @@ import { ProposalStatus } from '@/components/ProposalStatus'
 import { ProposalVote } from '@/components/ProposalVote'
 import { VoteBar } from '@/components/VoteBar'
 import { VoteButton } from '@/components/VoteButton'
-import { buttonVariants } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -34,6 +34,7 @@ import {
 } from '@/lib/utils'
 import { getProposal } from '@/hooks/useProposal'
 import { Nav } from '@/components/Nav'
+import { CopyButton } from '@/components/CopyButton'
 
 export default async function Proposal({
   params,
@@ -139,18 +140,22 @@ export default async function Proposal({
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         {/* Proposal */}
         <Card className="h-fit overflow-x-auto rounded-xl shadow-custom-card">
-          <Tabs defaultValue="body" className="md:p-3">
-            <TabsList className="h-auto w-full justify-start rounded-lg p-2">
-              <TabsTrigger className="w-full" value="body">
-                Description
-              </TabsTrigger>
-              <TabsTrigger className="w-full" value="calldata">
-                <span className="hidden lg:block">Executable Code</span>
-                <span className="block lg:hidden">Code</span>
-              </TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="body" className="p-3">
+            <div className="flex items-center gap-3">
+              <TabsList className="h-auto w-full justify-start border rounded-full p-1">
+                <TabsTrigger className="w-full rounded-full" value="body">
+                  Description
+                </TabsTrigger>
+                <TabsTrigger className="w-full rounded-full" value="calldata">
+                  <span className="hidden lg:block">Executable Code</span>
+                  <span className="block lg:hidden">Code</span>
+                </TabsTrigger>
+              </TabsList>
 
-            <CardContent className="px-3 pb-4 pt-2">
+              <CopyButton text={proposal.description} />
+            </div>
+
+            <CardContent className="px-0 md:px-3 pb-4 pt-2">
               {/* Proposal body */}
               <TabsContent value="body">
                 <ReactMarkdown
