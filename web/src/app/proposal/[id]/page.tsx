@@ -27,6 +27,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Typography } from '@/components/ui/typography'
 import {
+  bigintToFormattedString,
   formatTimestamp,
   getQuorumProgress,
   nameWithFallback,
@@ -331,17 +332,43 @@ function VotingCardHeader({
       )}
 
       {/* Quorum bar */}
-      <div className="relative overflow-hidden rounded bg-zinc-100">
+      <div className="relative overflow-hidden rounded bg-zinc-50">
         <div className="relative z-10 flex justify-between gap-2 p-2 text-sm capitalize leading-none">
-          <Typography className="font-medium">
-            {getQuorumProgress(proposal)}%
-          </Typography>
+          {(() => {
+            const quorumProgress = getQuorumProgress(proposal)
+            const votesTowadsQuorum =
+              BigInt(proposal.forVotes) + BigInt(proposal.abstainVotes)
+            const quorum = BigInt(proposal.quorum)
 
-          <Typography>Quorum</Typography>
+            if (votesTowadsQuorum >= quorum) {
+              return (
+                <>
+                  <Typography className="font-medium">
+                    {bigintToFormattedString(votesTowadsQuorum, {
+                      millions: true,
+                    })}{' '}
+                    / {bigintToFormattedString(quorum)}
+                  </Typography>
+                  <Typography>Quorum Reached</Typography>
+                </>
+              )
+            }
+
+            return (
+              <>
+                <Typography className="font-medium">
+                  {bigintToFormattedString(quorum - votesTowadsQuorum, {
+                    millions: true,
+                  })}
+                </Typography>
+                <Typography>Votes to Quorum</Typography>
+              </>
+            )
+          })()}
         </div>
 
         <div
-          className="absolute left-0 top-0 z-0 h-full rounded bg-zinc-200"
+          className="absolute left-0 top-0 z-0 h-full rounded bg-brand-freedom-blue"
           style={{
             width: `${getQuorumProgress(proposal)}%`,
           }}

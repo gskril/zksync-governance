@@ -1,12 +1,33 @@
-import { getDefaultWallets } from '@rainbow-me/rainbowkit'
+import { connectorsForWallets } from '@rainbow-me/rainbowkit'
+import {
+  metaMaskWallet,
+  rainbowWallet,
+  baseAccount,
+  walletConnectWallet,
+  safeWallet,
+} from '@rainbow-me/rainbowkit/wallets'
 import { createConfig, http } from 'wagmi'
 import { zksync, mainnet } from 'wagmi/chains'
 import { env } from './env'
 
-const { connectors } = getDefaultWallets({
-  appName: 'ZKsync Governance',
-  projectId: env.WALLETCONNECT_ID,
-})
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Popular',
+      wallets: [
+        metaMaskWallet,
+        rainbowWallet,
+        baseAccount,
+        walletConnectWallet,
+        safeWallet,
+      ],
+    },
+  ],
+  {
+    appName: 'ZKsync Governance',
+    projectId: env.WALLETCONNECT_ID,
+  }
+)
 
 export const wagmiConfig = createConfig({
   chains: [zksync, mainnet],

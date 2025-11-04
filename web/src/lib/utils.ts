@@ -49,7 +49,20 @@ export function getTotalVotes(proposal: EnhancedProposal) {
   )
 }
 
-export function bigintToFormattedString(count: bigint | string) {
+export function bigintToFormattedString(
+  count: bigint | string,
+  { millions = false } = {}
+) {
+  // If millions is true, always show the number with an M like 0.01M instead of 10K
+  if (millions) {
+    const string = `${(parseVotes(count) / 1000000).toFixed(2)}M`.replace(
+      '.00',
+      ''
+    )
+    // Add commas
+    return string.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
+
   return new Intl.NumberFormat('en-US', {
     notation: 'compact',
     maximumFractionDigits: 2,
