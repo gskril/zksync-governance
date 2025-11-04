@@ -7,6 +7,7 @@ import { useEnsName } from 'wagmi'
 import { bigintToFormattedString, cn, nameWithFallback } from '@/lib/utils'
 import { Typography } from '@/components/ui/typography'
 import { delegateNames } from '@/lib/names'
+import { env } from '@/lib/env'
 
 type Props = { vote: EnhancedProposalWithVotes['votes'][number] }
 
@@ -35,7 +36,7 @@ export function ProposalVote({ vote }: Props) {
           <img
             src={
               ensName
-                ? `https://ens-api.gregskril.com/avatar/${ensName}?width=48`
+                ? `https://ens-api.gregskril.com/avatar/${ensName}?width=48&fallback=${env.BASE_URL}/img/fallback-avatar.svg`
                 : '/img/fallback-avatar.svg'
             }
             alt={nameWithFallback(ensName, vote.voter)}

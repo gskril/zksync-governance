@@ -1,5 +1,6 @@
 'use client'
 
+import { env } from '@/lib/env'
 import { delegateNames } from '@/lib/names'
 import { nameWithFallback } from '@/lib/utils'
 import { Address } from 'viem'
@@ -21,7 +22,7 @@ export function DelegateName({ address }: { address: Address }) {
       <img
         src={
           ensName
-            ? `https://ens-api.gregskril.com/avatar/${ensName}?width=64`
+            ? `https://ens-api.gregskril.com/avatar/${ensName}?width=64&fallback=${env.BASE_URL}/img/fallback-avatar.svg`
             : '/img/fallback-avatar.svg'
         }
         alt={nameWithFallback(nickname || ensName, address)}
