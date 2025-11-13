@@ -21,34 +21,29 @@ export async function getDelegates(limit: number, offset: number) {
     with: {
       voteCasts: {
         orderBy: (cols, { desc }) => [desc(cols.timestamp)],
-        where: (cols, { inArray }) =>
-          inArray(cols.proposalId, latest5ProposalIds),
         limit: 5,
       },
     },
   })
 
   // Insert the missed vote with support -1 only if it is actually missed
-  // const delegates = delegatesWithVotes.map((delegate) => {
-  //   const voteCasts = latest5ProposalIds.map((proposalId) => {
-  //     const voteCast = delegate.voteCasts.find(
-  //       (voteCast) => voteCast.proposalId === proposalId
-  //     )
+  const delegates = delegatesWithVotes.map((delegate) => {
+    const voteCasts = latest5ProposalIds.map((proposalId) => {
+      const voteCast = delegate.voteCasts.find(
+        (voteCast) => voteCast.proposalId === proposalId
+      )
 
-  //     return (
-  //       voteCast ?? {
-  //         proposalId,
-  //         support: -1,
-  //       }
-  //     )
-  //   })
-  //   return { ...delegate, voteCasts }
-  // })
+      return (
+        voteCast ?? {
+          proposalId,
+          support: -1,
+        }
+      )
+    })
+    return { ...delegate, voteCasts }
+  })
 
-  return {
-    latest5Proposals,
-    delegates: delegatesWithVotes,
-  }
+  return delegates
 }
 
 export async function getDelegate(address: Address) {
