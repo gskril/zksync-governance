@@ -7,7 +7,7 @@ export async function getDelegates() {
 
   const response = await fetch(url)
   if (!response.ok) {
-    throw new Error('Failed to fetch proposal')
+    throw new Error('Failed to fetch delegates')
   }
   const json = await response.json()
   const data = json as GetDelegatesResponse

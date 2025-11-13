@@ -30,6 +30,7 @@
   },
   "exports": {
     "./types": "./dist/src/types.js",
-    "./contracts": "./dist/contracts/index.js"
+    "./contracts": "./dist/contracts/index.js",
+    "./utils": "./dist/src/utils.js"
   }
 }

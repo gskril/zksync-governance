@@ -18,6 +18,8 @@ const badgeVariants = cva(
           'border-transparent bg-brand-red/10 text-brand-red hover:bg-brand-red/20',
         success:
           'border-transparent text-brand-green bg-brand-green/10 hover:bg-brand-green/20',
+        warning:
+          'border-transparent text-brand-orange bg-brand-orange/10 hover:bg-brand-orange/20',
         outline: 'text-foreground',
       },
     },

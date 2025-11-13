@@ -79,6 +79,5 @@ export function getPropStatus(prop: typeof proposal.$inferSelect): Status {
 }
 
 export function getPropQuorumReached(prop: typeof proposal.$inferSelect) {
-  const quorumVotes = prop.forVotes + prop.abstainVotes
-  return quorumVotes >= prop.quorum
+  return prop.forVotes >= prop.quorum
 }

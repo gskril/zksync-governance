@@ -6,9 +6,9 @@ import {
   walletConnectWallet,
   safeWallet,
 } from '@rainbow-me/rainbowkit/wallets'
-import { createConfig, http } from 'wagmi'
-import { zksync, mainnet } from 'wagmi/chains'
+import { createConfig } from 'wagmi'
 import { env } from './env'
+import { chains, transports } from './web3-server'
 
 const connectors = connectorsForWallets(
   [
@@ -30,14 +30,7 @@ const connectors = connectorsForWallets(
 )
 
 export const wagmiConfig = createConfig({
-  chains: [zksync, mainnet],
+  chains,
   connectors,
-  transports: {
-    [zksync.id]: http(env.ZKSYNC_RPC_URL),
-    [mainnet.id]: http(env.ETH_RPC_URL, {
-      batch: {
-        batchSize: 1_024,
-      },
-    }),
-  },
+  transports,
 })

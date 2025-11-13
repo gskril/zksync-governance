@@ -62,7 +62,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="shadow-custom-card rounded-xl border">
+      <div className="shadow-custom-card rounded-xl border overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>

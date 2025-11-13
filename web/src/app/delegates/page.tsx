@@ -12,6 +12,7 @@ import { Nav } from '@/components/Nav'
 import { getDelegates } from '@/hooks/useDelegates'
 import { DelegateName } from '@/components/DelegateName'
 import { Metadata } from 'next'
+import Link from 'next/link'
 
 // Serve from cache but revalidate every 60 seconds (ISR)
 export const revalidate = 60
@@ -53,27 +54,31 @@ export default async function Delegates() {
         </div>
       </div>
 
-      <div className="shadow-custom-card rounded-xl border">
+      <div className="shadow-custom-card rounded-xl border overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-14 hidden md:table-cell">Rank</TableHead>
               <TableHead>Delegate</TableHead>
-              <TableHead className="hidden w-36 md:table-cell">
-                Voting Power
-              </TableHead>
+              <TableHead className="w-36">Voting Power</TableHead>
               <TableHead className="hidden w-52 text-right lg:table-cell">
                 Vote History
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {delegates.map((delegate) => (
+            {delegates.map((delegate, index) => (
               <TableRow key={delegate.address} className="group">
+                <TableCell className="hidden md:table-cell">
+                  {index + 1}
+                </TableCell>
                 <TableCell className="md:max-w-0">
-                  <DelegateName address={delegate.address} />
+                  <Link href={`/delegates/${delegate.address}`}>
+                    <DelegateName address={delegate.address} />
+                  </Link>
                 </TableCell>
 
-                <TableCell className="hidden md:table-cell">
+                <TableCell>
                   {bigintToFormattedString(BigInt(delegate.votes ?? 0))}
                 </TableCell>
 

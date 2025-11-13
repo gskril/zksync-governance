@@ -24,6 +24,8 @@ export function ProposalStatus({ proposal, className }: Props) {
     variant = 'destructive'
   } else if (proposal.status === 'canceled') {
     variant = 'secondary'
+  } else if (proposal.status === 'pending') {
+    variant = 'warning'
   }
 
   return (
