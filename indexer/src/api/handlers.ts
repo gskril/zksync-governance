@@ -6,8 +6,8 @@ export async function getDelegates(limit: number, offset: number) {
 
   const latest5Proposals = await db.query.proposal.findMany({
     orderBy: (cols, { desc }) => [desc(cols.createdAtBlock)],
-    where: (cols, { gte }) =>
-      gte(cols.startTimestamp, BigInt(Math.floor(currentUnitTimestamp))),
+    where: (cols, { lte }) =>
+      lte(cols.startTimestamp, BigInt(Math.floor(currentUnitTimestamp))),
     limit: 5,
   })
 
