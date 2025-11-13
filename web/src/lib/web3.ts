@@ -34,6 +34,10 @@ export const wagmiConfig = createConfig({
   connectors,
   transports: {
     [zksync.id]: http(env.ZKSYNC_RPC_URL),
-    [mainnet.id]: http(env.ETH_RPC_URL),
+    [mainnet.id]: http(env.ETH_RPC_URL, {
+      batch: {
+        batchSize: 1_024,
+      },
+    }),
   },
 })

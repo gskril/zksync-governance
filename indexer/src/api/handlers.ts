@@ -24,18 +24,20 @@ export async function getDelegates(limit: number, offset: number) {
     },
   })
 
-  // Insert the missed vote with support -1
+  // Insert the missed vote with support -1 only if it is actually missed
   const delegates = delegatesWithVotes.map((delegate) => {
     const voteCasts = latest5ProposalIds.map((proposalId) => {
       const voteCast = delegate.voteCasts.find(
         (voteCast) => voteCast.proposalId === proposalId
       )
-      return (
-        voteCast ?? {
+      if (voteCast !== undefined) {
+        return voteCast
+      } else {
+        return {
           proposalId,
           support: -1,
         }
-      )
+      }
     })
     return { ...delegate, voteCasts }
   })

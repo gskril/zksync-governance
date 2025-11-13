@@ -81,9 +81,10 @@ export default async function Delegates() {
                   <div className="flex items-center justify-end gap-1">
                     {delegate.voteCasts.map((vote) => (
                       <div
-                        key={vote.id}
+                        key={vote.proposalId}
                         className={cn(
                           'size-6 rounded-full',
+                          vote.support === -1 && 'bg-zinc-200',
                           vote.support === 0 && 'bg-brand-red',
                           vote.support === 1 && 'bg-brand-green',
                           vote.support === 2 && 'bg-zinc-500'

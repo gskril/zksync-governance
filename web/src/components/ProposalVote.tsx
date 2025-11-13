@@ -1,7 +1,7 @@
 'use client'
 
 import { EnhancedProposalWithVotes } from 'indexer/types'
-import { useInView } from 'react-intersection-observer'
+// import { useInView } from 'react-intersection-observer'
 import { useEnsName } from 'wagmi'
 
 import { bigintToFormattedString, cn, nameWithFallback } from '@/lib/utils'
@@ -13,11 +13,11 @@ type Props = { vote: EnhancedProposalWithVotes['votes'][number] }
 
 export function ProposalVote({ vote }: Props) {
   // TODO: Find a way to do this in batches so we can take advantage of multicall
-  const { ref, inView } = useInView({
-    rootMargin: '100px',
-    threshold: 0.5,
-    triggerOnce: true, // Only trigger once when it comes into view
-  })
+  // const { ref, inView } = useInView({
+  //   rootMargin: '100px',
+  //   threshold: 0.5,
+  //   triggerOnce: true, // Only trigger once when it comes into view
+  // })
 
   const manualName = delegateNames[vote.voter]
 
@@ -25,12 +25,12 @@ export function ProposalVote({ vote }: Props) {
     address: vote.voter,
     chainId: 1,
     query: {
-      enabled: inView, // Only run the query when the component is in viewport
+      // enabled: inView, // Only run the query when the component is in viewport
     },
   })
 
   return (
-    <div ref={ref} key={vote.id} className="space-y-1.5 text-sm font-medium">
+    <div key={vote.id} className="space-y-1.5 text-sm font-medium">
       <div className="flex w-full justify-between gap-4">
         <div className="flex items-center gap-1">
           <img
@@ -39,6 +39,7 @@ export function ProposalVote({ vote }: Props) {
                 ? `https://ens-api.gregskril.com/avatar/${ensName}?width=48&fallback=${env.BASE_URL}/img/fallback-avatar.svg`
                 : '/img/fallback-avatar.svg'
             }
+            loading="lazy"
             alt={nameWithFallback(ensName, vote.voter)}
             className="size-6 rounded-full object-cover"
           />
