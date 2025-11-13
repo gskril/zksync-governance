@@ -20,11 +20,10 @@ export async function getDelegates(limit: number, offset: number) {
     where: (cols, { isNotNull }) => isNotNull(cols.votes),
     with: {
       // TODO: Add filter for efficiency
-      voteCasts: true,
-      // voteCasts: {
-      //   orderBy: (cols, { desc }) => [desc(cols.timestamp)],
-      //   limit: 5,
-      // },
+      voteCasts: {
+        orderBy: (cols, { desc }) => [desc(cols.timestamp)],
+        limit: 5,
+      },
     },
   })
 
@@ -32,7 +31,7 @@ export async function getDelegates(limit: number, offset: number) {
   const delegates = delegatesWithVotes.map((delegate) => {
     const voteCasts = latest5ProposalIds.map((proposalId) => {
       const voteCast = delegate.voteCasts.find(
-        (voteCast) => voteCast.proposalId === proposalId
+        (voteCast) => voteCast.proposalId.toString() === proposalId.toString()
       )
 
       return (
@@ -45,7 +44,7 @@ export async function getDelegates(limit: number, offset: number) {
     return { ...delegate, voteCasts }
   })
 
-  return delegates
+  return { delegates, latest5ProposalIds }
 }
 
 export async function getDelegate(address: Address) {
