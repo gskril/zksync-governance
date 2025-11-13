@@ -9,7 +9,7 @@ export async function getDelegates(limit: number, offset: number) {
 
   const latest5ProposalIds = latest5Proposals.map((proposal) => proposal.id)
 
-  return db.query.account.findMany({
+  const delegatesWithVotes = await db.query.account.findMany({
     limit,
     offset,
     orderBy: (cols, { desc }) => [desc(cols.votes)],
@@ -23,6 +23,19 @@ export async function getDelegates(limit: number, offset: number) {
       },
     },
   })
+
+  // Insert `null` vote for missed proposals
+  const delegates = delegatesWithVotes.map((delegate) => {
+    const voteCasts = latest5ProposalIds.map((proposalId) => {
+      const voteCast = delegate.voteCasts.find(
+        (voteCast) => voteCast.proposalId === proposalId
+      )
+      return voteCast ?? null
+    })
+    return { ...delegate, voteCasts }
+  })
+
+  return delegates
 }
 
 export async function getDelegate(address: Address) {
