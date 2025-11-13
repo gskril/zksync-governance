@@ -44,7 +44,7 @@ export async function getDelegates(limit: number, offset: number) {
     return { ...delegate, voteCasts }
   })
 
-  return { delegates, latest5ProposalIds }
+  return { delegates: delegatesWithVotes, latest5ProposalIds }
 }
 
 export async function getDelegate(address: Address) {
