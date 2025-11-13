@@ -86,10 +86,9 @@ export function nameWithFallback(
 
 export function getQuorumProgress(proposal: EnhancedProposal) {
   const forVotes = parseVotes(proposal.forVotes)
-  const abstainVotes = parseVotes(proposal.abstainVotes)
   const quorum = parseVotes(proposal.quorum)
 
-  const countedVotes = forVotes + abstainVotes
+  const countedVotes = forVotes
   const progress = (countedVotes / quorum) * 100
 
   return Number(progress.toFixed(2))

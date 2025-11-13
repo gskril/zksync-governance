@@ -346,19 +346,14 @@ function VotingCardHeader({
       <div className="relative overflow-hidden rounded bg-zinc-50">
         <div className="relative z-10 flex justify-between gap-2 p-2 text-sm capitalize leading-none">
           {(() => {
-            const quorumProgress = getQuorumProgress(proposal)
-            const votesTowadsQuorum =
-              BigInt(proposal.forVotes) + BigInt(proposal.abstainVotes)
+            const votesTowadsQuorum = BigInt(proposal.forVotes)
             const quorum = BigInt(proposal.quorum)
 
             if (votesTowadsQuorum >= quorum) {
               return (
                 <>
                   <Typography className="font-medium">
-                    {bigintToFormattedString(votesTowadsQuorum, {
-                      millions: true,
-                    })}{' '}
-                    / {bigintToFormattedString(quorum)}
+                    {bigintToFormattedString(quorum)}
                   </Typography>
                   <Typography>Quorum Reached</Typography>
                 </>
