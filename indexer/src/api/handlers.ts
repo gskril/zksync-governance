@@ -19,10 +19,12 @@ export async function getDelegates(limit: number, offset: number) {
     orderBy: (cols, { desc }) => [desc(cols.votes)],
     where: (cols, { isNotNull }) => isNotNull(cols.votes),
     with: {
-      voteCasts: {
-        orderBy: (cols, { desc }) => [desc(cols.timestamp)],
-        limit: 5,
-      },
+      // TODO: Add filter for efficiency
+      voteCasts: true,
+      // voteCasts: {
+      //   orderBy: (cols, { desc }) => [desc(cols.timestamp)],
+      //   limit: 5,
+      // },
     },
   })
 
