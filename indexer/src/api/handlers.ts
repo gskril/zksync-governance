@@ -2,8 +2,12 @@ import { db } from 'ponder:api'
 import type { Address } from 'viem'
 
 export async function getDelegates(limit: number, offset: number) {
+  const currentUnitTimestamp = new Date().getTime() / 1000
+
   const latest5Proposals = await db.query.proposal.findMany({
     orderBy: (cols, { desc }) => [desc(cols.createdAtBlock)],
+    where: (cols, { gte }) =>
+      gte(cols.startTimestamp, BigInt(Math.floor(currentUnitTimestamp))),
     limit: 5,
   })
 
@@ -30,14 +34,13 @@ export async function getDelegates(limit: number, offset: number) {
       const voteCast = delegate.voteCasts.find(
         (voteCast) => voteCast.proposalId === proposalId
       )
-      if (voteCast !== undefined) {
-        return voteCast
-      } else {
-        return {
+
+      return (
+        voteCast ?? {
           proposalId,
           support: -1,
         }
-      }
+      )
     })
     return { ...delegate, voteCasts }
   })
