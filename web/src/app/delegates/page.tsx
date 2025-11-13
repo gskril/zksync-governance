@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Delegates() {
-  const { delegates } = await getDelegates()
+  const delegates = await getDelegates()
 
   return (
     <div className="container">

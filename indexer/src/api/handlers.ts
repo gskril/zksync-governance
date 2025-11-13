@@ -28,10 +28,13 @@ export async function getDelegates(limit: number, offset: number) {
   })
 
   // Insert the missed vote with support -1 only if it is actually missed
+  // Account for number precision loss at some point (idk why or where)
   const delegates = delegatesWithVotes.map((delegate) => {
     const voteCasts = latest5ProposalIds.map((proposalId) => {
       const voteCast = delegate.voteCasts.find(
-        (voteCast) => voteCast.proposalId.toString() === proposalId.toString()
+        (voteCast) =>
+          voteCast.proposalId.toString().slice(0, 16) ===
+          proposalId.toString().slice(0, 16)
       )
 
       return (
@@ -44,7 +47,7 @@ export async function getDelegates(limit: number, offset: number) {
     return { ...delegate, voteCasts }
   })
 
-  return { delegates: delegatesWithVotes, latest5ProposalIds }
+  return delegates
 }
 
 export async function getDelegate(address: Address) {
