@@ -1,12 +1,14 @@
 # Indexer
 
-This is a [Ponder](https://ponder.sh) project that indexes events from the [governor.ensdao.eth](https://etherscan.io/address/0x323A76393544d5ecca80cd6ef2A560C6a395b7E3) smart contract.
+This is a [Ponder](https://ponder.sh) project that indexes events from the three ZKsync governor smart contracts.
 
 ## Endpoints
 
 - `/` - GraphQL playground
 - `/proposals` - List of the 50 latest DAO proposals
 - `/proposals/:id` - Details for a specific proposal, including all votes
+- `/delegates` - Paginated list of delegates with their recent voting history
+- `/delegates/:address` - Details for a specific delegate
 
 ## Local development
 

@@ -52,7 +52,7 @@ export function ProposalVote({ vote, voter, weight }: Props) {
             href={
               ensName
                 ? `https://app.ens.domains/${ensName}`
-                : `https://etherscan.io/address/${voter}`
+                : `https://explorer.zksync.io/address/${voter}`
             }
             target="_blank"
             rel="noreferrer"

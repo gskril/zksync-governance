@@ -54,7 +54,7 @@ export function ProposalActionButton({ proposal, action }: Props) {
           buttonVariants(),
           'bg-green-600 font-bold hover:bg-green-600/90'
         )}
-        href={`https://etherscan.io/tx/${tx.data}`}
+        href={`https://explorer.zksync.io/tx/${tx.data}`}
         target="_blank"
       >
         Success!

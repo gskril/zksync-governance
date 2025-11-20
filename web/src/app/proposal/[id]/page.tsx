@@ -93,7 +93,7 @@ export default async function Proposal({
                   />
                 )} */}
                 <a
-                  href={`https://etherscan.io/address/${proposal.proposer}`}
+                  href={`https://explorer.zksync.io/address/${proposal.proposer}`}
                   target="_blank"
                   rel="noreferrer"
                   className="font-semibold hover:underline"
@@ -279,7 +279,7 @@ export default async function Proposal({
 
                     <div className="mt-2 flex justify-end gap-2">
                       <a
-                        href={`https://etherscan.io/address/${target}`}
+                        href={`https://explorer.zksync.io/address/${target}`}
                         target="_blank"
                         className={buttonVariants({
                           size: 'xs',
@@ -317,9 +317,13 @@ export default async function Proposal({
           <Tabs defaultValue="voted">
             <div className="flex gap-4 items-center justify-between px-6 py-4 sticky top-0 bg-background border-b mb-4">
               <CardTitle>Voters</CardTitle>
-              <TabsList>
-                <TabsTrigger value="voted">Voted</TabsTrigger>
-                <TabsTrigger value="notVoted">Didn't vote</TabsTrigger>
+              <TabsList className="rounded-full">
+                <TabsTrigger value="voted" className="rounded-full">
+                  Voted
+                </TabsTrigger>
+                <TabsTrigger value="notVoted" className="rounded-full">
+                  Didn't vote
+                </TabsTrigger>
               </TabsList>
             </div>
 

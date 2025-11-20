@@ -6,10 +6,13 @@ import { useEffect } from 'react'
 import {
   useAccount,
   useBlockNumber,
+  useChainId,
   useReadContracts,
+  useSwitchChain,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi'
+import { zksync } from 'wagmi/chains'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -26,12 +29,17 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
 import { bigintToFormattedString } from '@/lib/utils'
+import revalidateProposal from '@/lib/actions'
+import { Alert, AlertDescription, AlertTitle } from './ui/alert'
+import { CircleAlert } from 'lucide-react'
 
 export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
   const { address } = useAccount()
   const { data: blockNumber } = useBlockNumber()
   const tx = useWriteContract()
   const receipt = useWaitForTransactionReceipt({ hash: tx.data })
+  const currentChainId = useChainId()
+  const { switchChain } = useSwitchChain()
 
   const multicall = useReadContracts({
     contracts: [
@@ -61,7 +69,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
   useEffect(() => {
     if (receipt.isSuccess) {
       multicall.refetch()
-      // revalidateProposal(proposal.id)
+      revalidateProposal(proposal.id)
     }
   }, [receipt.isSuccess])
 
@@ -107,15 +115,22 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild={currentChainId === zksync.id}>
         <Button
           variant="primary"
           className="font-bold"
           disabled={hasVoted === true}
+          onClick={() => {
+            if (currentChainId !== zksync.id) {
+              switchChain({ chainId: zksync.id })
+            }
+          }}
         >
           {hasVoted === true
             ? 'Already Voted'
-            : `Vote with ${bigintToFormattedString(votingPower ?? '0')} $ZK`}
+            : currentChainId !== zksync.id
+              ? 'Switch chains'
+              : `Vote with ${bigintToFormattedString(votingPower ?? '0')} $ZK`}
         </Button>
       </DialogTrigger>
 
@@ -125,6 +140,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
             <DialogTitle className="text-2xl font-semibold">
               Vote Onchain
             </DialogTitle>
+
             <DialogDescription className="text-base">
               Once submitted, your vote cannot be changed.
             </DialogDescription>
@@ -133,22 +149,16 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
           {/* Select choice */}
           <div className="space-y-4">
             <RadioGroup defaultValue="1" name="choice" disabled={!!tx.data}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="1" id="1" />
-                <Label htmlFor="1">For</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="0" id="0" />
-                <Label htmlFor="0">Against</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="2" id="2" />
-                <Label htmlFor="2">Abstain</Label>
-              </div>
+              <VoteRadioGroupItem id="1" label="For" />
+              <VoteRadioGroupItem id="0" label="Against" />
+              <VoteRadioGroupItem id="2" label="Abstain" />
             </RadioGroup>
 
             <div className="space-y-0.5">
-              <Label htmlFor="reason">Reason</Label>
+              <div className="flex items-center justify-between gap-4">
+                <Label htmlFor="reason">Reason</Label>
+                <span className="text-sm text-muted-foreground">Optional</span>
+              </div>
               <Textarea
                 id="reason"
                 name="reason"
@@ -158,7 +168,17 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
             </div>
           </div>
 
-          <DialogFooter className="!flex-col items-end gap-1.5">
+          {votingPower === BigInt(0) && (
+            <Alert variant="destructive">
+              <CircleAlert />
+              <AlertTitle>Unable to vote</AlertTitle>
+              <AlertDescription>
+                You currently have 0 voting power.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <DialogFooter className="flex-col! items-end gap-1.5">
             <div className="flex items-center gap-2">
               <DialogClose asChild>
                 <Button variant="outline">Close</Button>
@@ -176,6 +196,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
                   variant="primary"
                   className="font-bold"
                   isLoading={tx.isPending || receipt.isLoading}
+                  disabled={votingPower === BigInt(0)}
                 >
                   Vote with {bigintToFormattedString(votingPower ?? '0')} $ZK
                 </Button>
@@ -184,7 +205,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
 
             {tx.data && (
               <a
-                href={`https://etherscan.io/tx/${tx.data}`}
+                href={`https://explorer.zksync.io/tx/${tx.data}`}
                 target="_blank"
                 className="flex items-center gap-1 text-sm text-muted-foreground hover:underline"
               >
@@ -195,5 +216,17 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
         </form>
       </DialogContent>
     </Dialog>
+  )
+}
+
+function VoteRadioGroupItem({ id, label }: { id: string; label: string }) {
+  return (
+    <Label
+      htmlFor={id}
+      className="flex items-center space-x-2 bg-gray-100 border rounded-md p-2"
+    >
+      <span className="w-full">{label}</span>
+      <RadioGroupItem value={id} id={id} className="" />
+    </Label>
   )
 }
