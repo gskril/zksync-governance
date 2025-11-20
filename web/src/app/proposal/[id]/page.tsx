@@ -312,11 +312,31 @@ export default async function Proposal({
         >
           <VotingCardHeader proposal={proposal} />
 
-          <CardContent className="space-y-4">
-            {proposal.votes.map((vote) => {
-              return <ProposalVote key={vote.id} vote={vote} />
-            })}
-          </CardContent>
+          <hr />
+
+          <Tabs>
+            <div className="flex gap-4 items-center justify-between px-6 py-4">
+              <CardTitle>Voters</CardTitle>
+              <TabsList>
+                <TabsTrigger value="voted">Voted</TabsTrigger>
+                <TabsTrigger value="notVoted">Didn't vote</TabsTrigger>
+              </TabsList>
+            </div>
+
+            <hr className="pb-4" />
+
+            <TabsContent value="voted">
+              <CardContent className="space-y-4">
+                {proposal.votes.map((vote) => {
+                  return <ProposalVote key={vote.id} vote={vote} />
+                })}
+              </CardContent>
+            </TabsContent>
+
+            <TabsContent value="notVoted">
+              <CardContent className="space-y-4"></CardContent>
+            </TabsContent>
+          </Tabs>
         </Card>
       </div>
 
