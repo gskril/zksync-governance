@@ -20,19 +20,21 @@ export async function getDelegates(limit: number, offset: number) {
     where: (cols, { isNotNull }) => isNotNull(cols.votes),
     with: {
       // TODO: Add filter for efficiency
-      voteCasts: true,
-      // voteCasts: {
-      //   orderBy: (cols, { desc }) => [desc(cols.timestamp)],
-      //   limit: 5,
-      // },
+      voteCasts: {
+        orderBy: (cols, { desc }) => [desc(cols.timestamp)],
+        limit: 5,
+      },
     },
   })
 
   // Insert the missed vote with support -1 only if it is actually missed
+  // Account for number precision loss at some point (idk why or where)
   const delegates = delegatesWithVotes.map((delegate) => {
     const voteCasts = latest5ProposalIds.map((proposalId) => {
       const voteCast = delegate.voteCasts.find(
-        (voteCast) => voteCast.proposalId === proposalId
+        (voteCast) =>
+          voteCast.proposalId.toString().slice(0, 16) ===
+          proposalId.toString().slice(0, 16)
       )
 
       return (
