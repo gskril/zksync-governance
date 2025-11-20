@@ -34,6 +34,7 @@ export type EnhancedProposal = ReplaceBigInts<typeof proposal.$inferSelect> & {
 
 export type EnhancedProposalWithVotes = EnhancedProposal & {
   votes: ReplaceBigInts<(typeof voteCastEvent.$inferSelect)[]>
+  didntVote: ReplaceBigInts<typeof account.$inferSelect>[]
 }
 
 export type GetDelegatesResponse = ReplaceBigInts<

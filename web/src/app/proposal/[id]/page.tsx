@@ -195,7 +195,7 @@ export default async function Proposal({
                       <Typography as="h6">{children}</Typography>
                     ),
                     p: ({ children }) => (
-                      <Typography as="p" className="break-words">
+                      <Typography as="p" className="wrap-break-words">
                         {children}
                       </Typography>
                     ),
@@ -225,7 +225,7 @@ export default async function Proposal({
                       </div>
                     ),
                     li: ({ children }) => (
-                      <li className="break-words">{children}</li>
+                      <li className="wrap-break-words">{children}</li>
                     ),
                     thead: ({ children }) => (
                       <TableHeader>{children}</TableHeader>
@@ -312,11 +312,46 @@ export default async function Proposal({
         >
           <VotingCardHeader proposal={proposal} />
 
-          <CardContent className="space-y-4">
-            {proposal.votes.map((vote) => {
-              return <ProposalVote key={vote.id} vote={vote} />
-            })}
-          </CardContent>
+          <hr />
+
+          <Tabs defaultValue="voted">
+            <div className="flex gap-4 items-center justify-between px-6 py-4 sticky top-0 bg-background border-b mb-4">
+              <CardTitle>Voters</CardTitle>
+              <TabsList>
+                <TabsTrigger value="voted">Voted</TabsTrigger>
+                <TabsTrigger value="notVoted">Didn't vote</TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="voted">
+              <CardContent className="space-y-4">
+                {proposal.votes.map((vote) => {
+                  return (
+                    <ProposalVote
+                      key={vote.id}
+                      vote={vote}
+                      voter={vote.voter}
+                      weight={vote.weight}
+                    />
+                  )
+                })}
+              </CardContent>
+            </TabsContent>
+
+            <TabsContent value="notVoted">
+              <CardContent className="space-y-4">
+                {proposal.didntVote.map(({ address, votes }) => {
+                  return (
+                    <ProposalVote
+                      key={address}
+                      voter={address}
+                      weight={votes ?? '0'}
+                    />
+                  )
+                })}
+              </CardContent>
+            </TabsContent>
+          </Tabs>
         </Card>
       </div>
 

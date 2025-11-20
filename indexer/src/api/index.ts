@@ -52,10 +52,21 @@ app.get('/proposals/:proposalId', async (c) => {
   const status = getPropStatus(prop)
   const quorumReached = getPropQuorumReached(prop)
 
+  const top50Delegates = await db.query.account.findMany({
+    limit: 50,
+    orderBy: (cols, { desc }) => [desc(cols.votes)],
+    where: (cols, { isNotNull }) => isNotNull(cols.votes),
+  })
+
+  const didntVote = top50Delegates.filter((delegate) => {
+    return !prop.votes.some((vote) => vote.voter === delegate.address)
+  })
+
   const enhancedProposal = replaceBigInts(
     {
       status,
       quorumReached,
+      didntVote,
       ...prop,
     },
     (v) => String(v)
