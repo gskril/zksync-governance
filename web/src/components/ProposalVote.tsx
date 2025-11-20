@@ -8,10 +8,15 @@ import { bigintToFormattedString, cn, nameWithFallback } from '@/lib/utils'
 import { Typography } from '@/components/ui/typography'
 import { delegateNames } from '@/lib/names'
 import { env } from '@/lib/env'
+import { Address } from 'viem'
 
-type Props = { vote: EnhancedProposalWithVotes['votes'][number] }
+type Props = {
+  vote?: EnhancedProposalWithVotes['votes'][number]
+  voter: Address
+  weight: string
+}
 
-export function ProposalVote({ vote }: Props) {
+export function ProposalVote({ vote, voter, weight }: Props) {
   // TODO: Find a way to do this in batches so we can take advantage of multicall
   // const { ref, inView } = useInView({
   //   rootMargin: '100px',
@@ -19,10 +24,10 @@ export function ProposalVote({ vote }: Props) {
   //   triggerOnce: true, // Only trigger once when it comes into view
   // })
 
-  const manualName = delegateNames[vote.voter]
+  const manualName = delegateNames[voter]
 
   const { data: ensName } = useEnsName({
-    address: vote.voter,
+    address: voter,
     chainId: 1,
     query: {
       // enabled: inView, // Only run the query when the component is in viewport
@@ -30,7 +35,7 @@ export function ProposalVote({ vote }: Props) {
   })
 
   return (
-    <div key={vote.id} className="space-y-1.5 text-sm font-medium">
+    <div key={voter} className="space-y-1.5 text-sm font-medium">
       <div className="flex w-full justify-between gap-4">
         <div className="flex items-center gap-1">
           <img
@@ -40,40 +45,42 @@ export function ProposalVote({ vote }: Props) {
                 : '/img/fallback-avatar.svg'
             }
             loading="lazy"
-            alt={nameWithFallback(ensName, vote.voter)}
+            alt={nameWithFallback(ensName, voter)}
             className="size-6 rounded-full object-cover"
           />
           <a
             href={
               ensName
                 ? `https://app.ens.domains/${ensName}`
-                : `https://etherscan.io/address/${vote.voter}`
+                : `https://etherscan.io/address/${voter}`
             }
             target="_blank"
             rel="noreferrer"
           >
-            {nameWithFallback(manualName || ensName, vote.voter)}
+            {nameWithFallback(manualName || ensName, voter)}
           </a>
-          <span
-            className={cn(
-              vote.support === 0 && 'text-brand-red',
-              vote.support === 1 && 'text-brand-green',
-              vote.support === 2 && 'text-zinc-500',
-              'font-medium'
-            )}
-          >
-            {vote.support === 0
-              ? 'voted against'
-              : vote.support === 1
-                ? 'voted for'
-                : 'abstained'}
-          </span>
+          {vote && (
+            <span
+              className={cn(
+                vote.support === 0 && 'text-brand-red',
+                vote.support === 1 && 'text-brand-green',
+                vote.support === 2 && 'text-zinc-500',
+                'font-medium'
+              )}
+            >
+              {vote.support === 0
+                ? 'voted against'
+                : vote.support === 1
+                  ? 'voted for'
+                  : 'abstained'}
+            </span>
+          )}
         </div>
 
-        <div>{bigintToFormattedString(vote.weight)}</div>
+        <div>{bigintToFormattedString(weight)}</div>
       </div>
 
-      {vote.reason && (
+      {vote?.reason && (
         <Typography as="span" className="block text-zinc-600">
           {vote.reason}
         </Typography>
