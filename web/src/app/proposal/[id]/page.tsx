@@ -33,6 +33,7 @@ import {
 import { getProposal } from '@/hooks/useProposal'
 import { Nav } from '@/components/Nav'
 import { CopyButton } from '@/components/CopyButton'
+import { notFound } from 'next/navigation'
 
 export async function generateMetadata({
   params,
@@ -41,6 +42,10 @@ export async function generateMetadata({
 }) {
   const { id } = await params
   const proposal = await getProposal(id)
+
+  if (!proposal) {
+    return notFound()
+  }
 
   return {
     title: `${proposal.title} - ZKsync Governance`,
@@ -57,7 +62,7 @@ export default async function Proposal({
   const proposal = await getProposal(id)
 
   if (!proposal) {
-    return <div>Error fetching proposal :/</div>
+    return notFound()
   }
 
   return (

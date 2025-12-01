@@ -17,7 +17,8 @@ export async function getProposal(id: string) {
 
   const response = await fetch(url)
   if (!response.ok) {
-    throw new Error('Failed to fetch proposal')
+    console.error('Failed to fetch proposal', response)
+    return null
   }
   const json = await response.json()
   const data = json as EnhancedProposalWithVotes

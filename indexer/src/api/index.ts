@@ -36,7 +36,7 @@ app.get('/proposals', async (c) => {
 app.get('/proposals/:proposalId', async (c) => {
   const proposalId = c.req.param('proposalId')
   const prop = await db.query.proposal.findFirst({
-    where: (cols, { eq }) => eq(cols.id, BigInt(proposalId)),
+    where: (cols, { like }) => like(cols.id, `${proposalId.slice(0, 16)}%`),
     with: {
       votes: {
         orderBy: (cols, { desc }) => [desc(cols.weight)],

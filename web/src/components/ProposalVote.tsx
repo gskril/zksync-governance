@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { EnhancedProposalWithVotes } from 'indexer/types'
 // import { useInView } from 'react-intersection-observer'
 import { useEnsName } from 'wagmi'
@@ -48,17 +49,9 @@ export function ProposalVote({ vote, voter, weight }: Props) {
             alt={nameWithFallback(ensName, voter)}
             className="size-6 rounded-full object-cover"
           />
-          <a
-            href={
-              ensName
-                ? `https://app.ens.domains/${ensName}`
-                : `https://explorer.zksync.io/address/${voter}`
-            }
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link href={`/delegates/${voter}`}>
             {nameWithFallback(manualName || ensName, voter)}
-          </a>
+          </Link>
           {vote && (
             <span
               className={cn(
