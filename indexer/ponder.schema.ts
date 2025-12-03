@@ -99,6 +99,7 @@ export const voteCastEvent = onchainTable('voteCastEvent', (t) => ({
   transaction: t.hex().notNull(),
   voter: t.hex().notNull(),
   proposalId: t.bigint().notNull(),
+  proposalStartTimestamp: t.bigint().notNull(),
   support: t.integer().notNull(),
   weight: t.bigint().notNull(),
   reason: t.text().notNull(),

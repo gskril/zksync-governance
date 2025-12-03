@@ -21,7 +21,7 @@ export async function getDelegates(limit: number, offset: number) {
     with: {
       // TODO: Add filter for efficiency
       voteCasts: {
-        orderBy: (cols, { desc }) => [desc(cols.timestamp)],
+        orderBy: (cols, { desc }) => [desc(cols.proposalStartTimestamp)],
         limit: 5,
       },
     },

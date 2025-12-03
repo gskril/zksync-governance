@@ -112,12 +112,17 @@ ponder.on('Governor:TimelockChange', async ({ event, context }) => {
 })
 
 ponder.on('Governor:VoteCast', async ({ event, context }) => {
+  const proposalRow = await context.db.find(proposal, {
+    id: event.args.proposalId,
+  })
+
   // 0 = for, 1 = against, 2 = abstain
   await context.db.insert(voteCastEvent).values({
     ...event.args,
     id: event.id,
     timestamp: event.block.timestamp,
     transaction: event.transaction.hash,
+    proposalStartTimestamp: proposalRow?.startTimestamp ?? 0n,
   })
 
   if (event.args.support === 0) {

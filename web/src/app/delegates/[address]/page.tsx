@@ -144,8 +144,21 @@ export default async function Delegate({
                 </TableCell>
 
                 <TableCell className="hidden text-right lg:table-cell">
-                  <Badge variant={support === 0 ? 'destructive' : 'success'}>
-                    {support === 0 ? 'Against' : 'For'}
+                  <Badge
+                    variant={
+                      support === 0
+                        ? 'destructive'
+                        : support === 2
+                          ? 'secondary'
+                          : 'success'
+                    }
+                    className="uppercase"
+                  >
+                    {support === 0
+                      ? 'Against'
+                      : support === 2
+                        ? 'Abstain'
+                        : 'For'}
                   </Badge>
                 </TableCell>
               </TableRow>
