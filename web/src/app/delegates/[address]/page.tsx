@@ -106,8 +106,8 @@ export default async function Delegate({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {delegate.voteCasts.map(({ proposal, support }) => (
-              <TableRow key={proposal.id} className="group">
+            {delegate.voteCasts.map(({ proposalId, proposal, support }) => (
+              <TableRow key={proposalId} className="group">
                 {/* Not sure why max-w-0 is needed here, but it seems to work fine in all browsers */}
                 <TableCell className="md:max-w-0">
                   <div className="flex flex-col gap-2">
@@ -118,7 +118,7 @@ export default async function Delegate({
                       {formatTimestamp(proposal.createdAtTimestamp)}
                     </Typography>
                     <Link
-                      href={`/proposal/${proposal.id}`}
+                      href={`/proposal/${proposalId}`}
                       className="font-medium hover:underline group-hover:text-brand-primary"
                     >
                       {proposal.title}

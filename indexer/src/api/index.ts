@@ -34,9 +34,9 @@ app.get('/proposals', async (c) => {
 
 // TODO: Implement pagination of voters
 app.get('/proposals/:proposalId', async (c) => {
-  const proposalId = c.req.param('proposalId')
+  const proposalId = BigInt(c.req.param('proposalId'))
   const prop = await db.query.proposal.findFirst({
-    where: (cols, { like }) => like(cols.id, `${proposalId.slice(0, 16)}%`),
+    where: (cols, { eq }) => eq(cols.id, proposalId),
     with: {
       votes: {
         orderBy: (cols, { desc }) => [desc(cols.weight)],
@@ -89,6 +89,7 @@ app.get('/delegates/:address', async (c) => {
   if (!delegate) {
     return c.json({ error: 'Delegate not found' }, 404)
   }
+
   return c.json(replaceBigInts(delegate, (v) => String(v)))
 })
 

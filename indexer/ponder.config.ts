@@ -9,15 +9,13 @@ import {
   ZkTokenGovernor,
 } from './contracts'
 
+const isDev = process.env.NODE_ENV === 'development'
+
 export default createConfig({
   chains: {
     zkSync: {
       id: 324,
-      rpc: loadBalance([
-        http('https://mainnet.era.zksync.io'),
-        http('https://1rpc.io/zksync2-era'),
-        http('https://rpc.ankr.com/zksync_era'),
-      ]),
+      rpc: loadBalance([http('https://mainnet.era.zksync.io')]),
     },
   },
   contracts: {
@@ -30,12 +28,14 @@ export default createConfig({
       abi: ZkTokenGovernor.abi,
       chain: 'zkSync',
       startBlock: ZkProtocolGovernor.startBlock, // earliest deployment of the 3 governors
+      endBlock: isDev ? 60410162 : undefined,
     },
     Token: {
       address: ZkToken.address,
       abi: ZkToken.abi,
       chain: 'zkSync',
-      startBlock: ZkToken.startBlock,
+      startBlock: isDev ? 60410000 : ZkToken.startBlock,
+      endBlock: isDev ? 60410162 : undefined,
     },
   },
 })

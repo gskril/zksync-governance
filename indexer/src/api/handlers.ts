@@ -37,12 +37,16 @@ export async function getDelegates(limit: number, offset: number) {
           proposalId.toString().slice(0, 16)
       )
 
-      return (
-        voteCast ?? {
-          proposalId,
-          support: -1,
-        }
-      )
+      // Workaround for Ponder's precision loss bug
+      if (voteCast) {
+        voteCast.proposalId = proposalId
+        return voteCast
+      }
+
+      return {
+        proposalId,
+        support: -1,
+      }
     })
     return { ...delegate, voteCasts }
   })
@@ -51,15 +55,25 @@ export async function getDelegates(limit: number, offset: number) {
 }
 
 export async function getDelegate(address: Address) {
-  return db.query.account.findFirst({
+  // We can't use the relationship here with `voteCasts` due to a Ponder precision loss bug
+  const delegate = await db.query.account.findFirst({
     where: (cols, { eq }) => eq(cols.address, address),
+  })
+
+  const voteCasts = await db.query.voteCastEvent.findMany({
+    where: (cols, { eq }) => eq(cols.voter, address),
+    orderBy: (cols, { desc }) => [desc(cols.timestamp)],
     with: {
-      voteCasts: {
-        orderBy: (cols, { desc }) => [desc(cols.timestamp)],
-        with: {
-          proposal: true,
-        },
-      },
+      proposal: true,
     },
   })
+
+  if (!delegate) {
+    return null
+  }
+
+  return {
+    ...delegate,
+    voteCasts,
+  }
 }
