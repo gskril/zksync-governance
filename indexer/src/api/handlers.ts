@@ -13,18 +13,27 @@ export async function getDelegates(limit: number, offset: number) {
 
   const latest5ProposalIds = latest5Proposals.map((proposal) => proposal.id)
 
-  const delegatesWithVotes = await db.query.account.findMany({
+  const delegatesWithoutVotes = await db.query.account.findMany({
     limit,
     offset,
     orderBy: (cols, { desc }) => [desc(cols.votes)],
     where: (cols, { isNotNull }) => isNotNull(cols.votes),
-    with: {
-      // TODO: Add filter for efficiency
-      voteCasts: {
-        orderBy: (cols, { desc }) => [desc(cols.proposalStartTimestamp)],
-        limit: 5,
-      },
-    },
+  })
+
+  const votes = await db.query.voteCastEvent.findMany({
+    where: (cols, { inArray, and }) =>
+      and(
+        inArray(cols.proposalId, latest5ProposalIds),
+        inArray(
+          cols.voter,
+          delegatesWithoutVotes.map((delegate) => delegate.address)
+        )
+      ),
+  })
+
+  const delegatesWithVotes = delegatesWithoutVotes.map((delegate) => {
+    const voteCasts = votes.filter((vote) => vote.voter === delegate.address)
+    return { ...delegate, voteCasts }
   })
 
   // Insert the missed vote with support -1 only if it is actually missed
@@ -32,9 +41,7 @@ export async function getDelegates(limit: number, offset: number) {
   const delegates = delegatesWithVotes.map((delegate) => {
     const voteCasts = latest5ProposalIds.map((proposalId) => {
       const voteCast = delegate.voteCasts.find(
-        (voteCast) =>
-          voteCast.proposalId.toString().slice(0, 16) ===
-          proposalId.toString().slice(0, 16)
+        (voteCast) => voteCast.proposalId === proposalId
       )
 
       // Workaround for Ponder's precision loss bug
@@ -62,7 +69,7 @@ export async function getDelegate(address: Address) {
 
   const voteCasts = await db.query.voteCastEvent.findMany({
     where: (cols, { eq }) => eq(cols.voter, address),
-    orderBy: (cols, { desc }) => [desc(cols.timestamp)],
+    orderBy: (cols, { desc }) => [desc(cols.proposalStartTimestamp)],
     with: {
       proposal: true,
     },
