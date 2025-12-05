@@ -8,7 +8,7 @@ const url = new URL('/status', env.PONDER_URL).toString()
 export function IndexerStatus() {
   const { data } = useQuery({
     queryKey: ['indexer-status'],
-    refetchInterval: 5000,
+    refetchInterval: 30_000,
     queryFn: async () => {
       const res = await fetch(url)
       const json = (await res.json()) as {

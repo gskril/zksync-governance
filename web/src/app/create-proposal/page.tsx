@@ -1,10 +1,10 @@
-import { Nav } from '@/components/Nav'
+import { Metadata } from 'next'
+import { CreateProposalClient } from './client'
 
-export default function CreateProposal() {
-  return (
-    <div className="container">
-      <Nav />
-      <div>Create Proposal</div>
-    </div>
-  )
+export const metadata: Metadata = {
+  title: 'Create a ZKsync Governance Proposal',
+}
+
+export default function CreateProposalPage() {
+  return <CreateProposalClient />
 }

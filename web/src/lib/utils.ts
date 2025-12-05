@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from 'clsx'
 import { EnhancedProposal } from 'indexer/types'
 import { twMerge } from 'tailwind-merge'
-import { Address } from 'viem'
+import { Address, getAddress } from 'viem'
 import {
   ZkTokenGovernor,
   ZkProtocolGovernor,
@@ -120,15 +120,12 @@ export function parseVotes(votes: string | bigint): number {
   return Number(BigInt(votes) / BigInt(1e18))
 }
 
+export const GOVERNORS = new Map<Address, string>([
+  [ZkTokenGovernor.address, 'Token Governor'],
+  [ZkProtocolGovernor.address, 'Protocol Governor'],
+  [ZkGovOpsGovernor.address, 'GovOps Governor'],
+])
+
 export function getGovernorName(address: Address) {
-  switch (address) {
-    case ZkTokenGovernor.address.toLowerCase():
-      return 'Token Governor'
-    case ZkProtocolGovernor.address.toLowerCase():
-      return 'Protocol Governor'
-    case ZkGovOpsGovernor.address.toLowerCase():
-      return 'GovOps Governor'
-    default:
-      return 'Unknown Governor'
-  }
+  return GOVERNORS.get(getAddress(address)) ?? 'Unknown Governor'
 }
