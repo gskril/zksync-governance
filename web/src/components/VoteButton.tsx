@@ -12,7 +12,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi'
-import { zksync } from 'wagmi/chains'
+import { zksync, zksyncSepoliaTestnet } from 'wagmi/chains'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -115,20 +115,20 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild={currentChainId === zksync.id}>
+      <DialogTrigger asChild={currentChainId === zksyncSepoliaTestnet.id}>
         <Button
           variant="primary"
           className="font-bold"
           disabled={hasVoted === true}
           onClick={() => {
-            if (currentChainId !== zksync.id) {
-              switchChain({ chainId: zksync.id })
+            if (currentChainId !== zksyncSepoliaTestnet.id) {
+              switchChain({ chainId: zksyncSepoliaTestnet.id })
             }
           }}
         >
           {hasVoted === true
             ? 'Already Voted'
-            : currentChainId !== zksync.id
+            : currentChainId !== zksyncSepoliaTestnet.id
               ? 'Switch chains'
               : `Vote with ${bigintToFormattedString(votingPower ?? '0')} $ZK`}
         </Button>

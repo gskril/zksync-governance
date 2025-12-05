@@ -26,7 +26,7 @@ import {
   useWriteContract,
 } from 'wagmi'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { zksync } from 'wagmi/chains'
+import { zksync, zksyncSepoliaTestnet } from 'wagmi/chains'
 
 type Transaction = {
   target: string
@@ -43,14 +43,14 @@ export function CreateProposalClient() {
   const { data: threshold } = useReadContract({
     ...ZkTokenGovernor,
     functionName: 'proposalThreshold',
-    chainId: zksync.id,
+    chainId: zksyncSepoliaTestnet.id,
   })
 
   const { data: votingPower, error: votingPowerError } = useReadContract({
     ...ZkToken,
     functionName: 'getVotes',
     args: address ? [address] : undefined,
-    chainId: zksync.id,
+    chainId: zksyncSepoliaTestnet.id,
   })
 
   const hasEnoughVotingPower =
@@ -66,7 +66,7 @@ export function CreateProposalClient() {
     const governorContract = formData.get('governorContract') as string
     const proposalMarkdown = formData.get('proposalMarkdown') as string
 
-    await switchChainAsync({ chainId: zksync.id })
+    await switchChainAsync({ chainId: zksyncSepoliaTestnet.id })
     tx.writeContract({
       address: governorContract as Address,
       abi: ZkProtocolGovernor.abi, // All 3 governors use the same ABI

@@ -1,6 +1,8 @@
 export const ZkToken = {
-  address: '0x5A7d6b2F92C77FAD6CCaBd7EE0624E64907Eaf3E',
-  startBlock: 34572100,
+  // address: '0x5A7d6b2F92C77FAD6CCaBd7EE0624E64907Eaf3E', // Mainnet
+  address: '0x69e5DC39E2bCb1C17053d2A4ee7CAEAAc5D36f96', // Sepolia Testnet
+  // startBlock: 34572100,
+  startBlock: 2465760, // Sepolia Testnet
   abi: [
     {
       inputs: [{ internalType: 'uint256', name: 'expiry', type: 'uint256' }],

@@ -1,6 +1,8 @@
 export const ZkTokenGovernor = {
-  address: '0xb83FF6501214ddF40C91C9565d095400f3F45746',
-  startBlock: 55519658, // When the contract was deployed, so Ponder knows where to start indexing
+  // address: '0xb83FF6501214ddF40C91C9565d095400f3F45746', // Mainnet
+  address: '0x98fF5B31bBa84f5Ad05a7635a436151F74aDa466', // Sepolia Testnet
+  // startBlock: 55519658, // When the contract was deployed, so Ponder knows where to start indexing
+  startBlock: 3584691, // Sepolia Testnet
   abi: [
     {
       inputs: [
@@ -906,13 +908,17 @@ export const ZkTokenGovernor = {
 } as const
 
 export const ZkProtocolGovernor = {
-  address: '0x76705327e682F2d96943280D99464Ab61219e34f',
-  startBlock: 41196850,
+  // address: '0x76705327e682F2d96943280D99464Ab61219e34f', // Mainnet
+  address: '0x5a6862ee581b6cDb517D24f0a69237f9D900C23C', // Sepolia Testnet
+  // startBlock: 41196850,
+  startBlock: 3584343, // Sepolia Testnet
   abi: ZkTokenGovernor.abi,
 } as const
 
 export const ZkGovOpsGovernor = {
-  address: '0xEEEa739a8b6fB1b8f703E23C9Be03CeeA643b160',
-  startBlock: 55500650,
+  // address: '0xEEEa739a8b6fB1b8f703E23C9Be03CeeA643b160', // Mainnet
+  address: '0x56f6379F945e95558069acb3E945ee3480025605', // Sepolia Testnet
+  // startBlock: 55500650,
+  startBlock: 3734267, // Sepolia Testnet
   abi: ZkTokenGovernor.abi,
 } as const
