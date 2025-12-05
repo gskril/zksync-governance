@@ -13,11 +13,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ZkToken, ZkTokenGovernor } from 'indexer/contracts'
+import { ZkProtocolGovernor, ZkToken, ZkTokenGovernor } from 'indexer/contracts'
 import { InfoIcon, MinusIcon, PlusIcon } from 'lucide-react'
-import { useState } from 'react'
-import { isAddress, isHex } from 'viem'
-import { useAccount, useReadContract } from 'wagmi'
+import { useEffect, useState } from 'react'
+import { Address, Hex, isAddress, isHex } from 'viem'
+import {
+  useAccount,
+  useReadContract,
+  useSwitchChain,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { zksync } from 'wagmi/chains'
 
@@ -29,6 +35,10 @@ type Transaction = {
 
 export function CreateProposalClient() {
   const { isConnected, address } = useAccount()
+  const { switchChainAsync } = useSwitchChain()
+  const tx = useWriteContract()
+  const receipt = useWaitForTransactionReceipt({ hash: tx.data })
+
   const { data: votingPower } = useReadContract({
     ...ZkToken,
     functionName: 'getVotes',
@@ -44,12 +54,25 @@ export function CreateProposalClient() {
     { target: '', value: 0, calldata: '' },
   ])
 
-  function handleCreateProposal(e: React.FormEvent<HTMLFormElement>) {
+  async function handleCreateProposal(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.target as HTMLFormElement)
     const governorContract = formData.get('governorContract') as string
     const proposalMarkdown = formData.get('proposalMarkdown') as string
     console.log({ governorContract, proposalMarkdown, transactions })
+
+    await switchChainAsync({ chainId: zksync.id })
+    tx.writeContract({
+      address: governorContract as Address,
+      abi: ZkProtocolGovernor.abi, // All 3 governors use the same ABI
+      functionName: 'propose',
+      args: [
+        transactions.map((transaction) => transaction.target as Address), // targets
+        transactions.map((transaction) => BigInt(transaction.value)), // values
+        transactions.map((transaction) => transaction.calldata as Hex), // calldatas
+        proposalMarkdown, // description
+      ],
+    })
   }
 
   return (
@@ -137,7 +160,7 @@ export function CreateProposalClient() {
 
           <Button
             type="submit"
-            variant="primary"
+            variant={receipt.isError ? 'destructive' : 'primary'}
             className="w-full rounded-full"
             // Disable button if any transaction is missing data
             disabled={
@@ -148,8 +171,15 @@ export function CreateProposalClient() {
                   !isAddress(transaction.target) || !isHex(transaction.calldata)
               )
             }
+            isLoading={tx.isPending || receipt.isLoading}
           >
-            Create Proposal
+            {tx.isPending
+              ? 'Pending Approval...'
+              : receipt.isError
+                ? 'Transaction Failed'
+                : receipt.isLoading
+                  ? 'Pending Transaction...'
+                  : 'Create Proposal'}
           </Button>
         </form>
       </main>
