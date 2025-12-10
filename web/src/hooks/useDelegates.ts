@@ -1,8 +1,11 @@
 import { env } from '@/lib/env'
 import { GetDelegatesResponse } from 'indexer/types'
 
-export async function getDelegates() {
-  const path = `/delegates`
+export const DELEGATES_PER_PAGE = 50
+
+export async function getDelegates(page: number = 1) {
+  const offset = (page - 1) * DELEGATES_PER_PAGE
+  const path = `/delegates?offset=${offset}&limit=${DELEGATES_PER_PAGE}`
   const url = new URL(path, env.PONDER_URL).toString()
 
   const response = await fetch(url)

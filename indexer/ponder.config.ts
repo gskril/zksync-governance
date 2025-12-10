@@ -34,7 +34,7 @@ export default createConfig({
       address: ZkToken.address,
       abi: ZkToken.abi,
       chain: 'zkSync',
-      startBlock: isDev ? 60410000 : ZkToken.startBlock,
+      startBlock: isDev ? 55000000 : ZkToken.startBlock,
       endBlock: isDev ? 60410162 : undefined,
     },
   },

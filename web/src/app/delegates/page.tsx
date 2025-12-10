@@ -7,9 +7,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
 import { bigintToFormattedString, cn } from '@/lib/utils'
 import { Nav } from '@/components/Nav'
-import { getDelegates } from '@/hooks/useDelegates'
+import { getDelegates, DELEGATES_PER_PAGE } from '@/hooks/useDelegates'
 import { DelegateName } from '@/components/DelegateName'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -22,8 +31,57 @@ export const metadata: Metadata = {
   description: 'View the delegates of the ZKsync Governance System.',
 }
 
-export default async function Delegates() {
-  const delegates = await getDelegates()
+type Props = {
+  searchParams: Promise<{ page?: string }>
+}
+
+export default async function Delegates({ searchParams }: Props) {
+  const { page: pageParam } = await searchParams
+  const currentPage = Math.max(1, parseInt(pageParam ?? '1', 10) || 1)
+  const delegates = await getDelegates(currentPage)
+  const totalPages = 100
+
+  // Calculate the rank offset based on current page
+  const rankOffset = (currentPage - 1) * DELEGATES_PER_PAGE
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages: (number | 'ellipsis')[] = []
+    const maxVisible = 5
+
+    if (totalPages <= maxVisible + 2) {
+      // Show all pages if total is small
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      // Always show first page
+      pages.push(1)
+
+      if (currentPage > 3) {
+        pages.push('ellipsis')
+      }
+
+      // Show pages around current
+      const start = Math.max(2, currentPage - 1)
+      const end = Math.min(totalPages - 1, currentPage + 1)
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i)
+      }
+
+      if (currentPage < totalPages - 2) {
+        pages.push('ellipsis')
+      }
+
+      // Always show last page
+      if (totalPages > 1) {
+        pages.push(totalPages)
+      }
+    }
+
+    return pages
+  }
 
   return (
     <div className="container">
@@ -69,8 +127,8 @@ export default async function Delegates() {
           <TableBody>
             {delegates.map((delegate, index) => (
               <TableRow key={delegate.address} className="group">
-                <TableCell className="hidden md:table-cell">
-                  {index + 1}
+                <TableCell className="hidden md:table-cell text-muted-foreground">
+                  {rankOffset + index + 1}
                 </TableCell>
                 <TableCell className="md:max-w-0">
                   <Link href={`/delegates/${delegate.address}`}>
@@ -103,6 +161,55 @@ export default async function Delegates() {
           </TableBody>
         </Table>
       </div>
+
+      <Pagination className="mt-6">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href={
+                currentPage > 1 ? `/delegates?page=${currentPage - 1}` : '#'
+              }
+              aria-disabled={currentPage <= 1}
+              className={
+                currentPage <= 1 ? 'pointer-events-none opacity-50' : ''
+              }
+            />
+          </PaginationItem>
+
+          {getPageNumbers().map((page, i) =>
+            page === 'ellipsis' ? (
+              <PaginationItem key={`ellipsis-${i}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            ) : (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  href={`/delegates?page=${page}`}
+                  isActive={page === currentPage}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            )
+          )}
+
+          <PaginationItem>
+            <PaginationNext
+              href={
+                currentPage < totalPages
+                  ? `/delegates?page=${currentPage + 1}`
+                  : '#'
+              }
+              aria-disabled={currentPage >= totalPages}
+              className={
+                currentPage >= totalPages
+                  ? 'pointer-events-none opacity-50'
+                  : ''
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
 
       <Footer />
     </div>
