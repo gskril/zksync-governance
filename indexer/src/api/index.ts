@@ -1,9 +1,9 @@
 import { replaceBigInts } from '@ponder/utils'
 import { Hono } from 'hono'
-import { graphql } from 'ponder'
+import { eq, graphql } from 'ponder'
 import { db } from 'ponder:api'
 import schema from 'ponder:schema'
-import { getAddress, parseUnits } from 'viem'
+import { type Address, getAddress, parseUnits } from 'viem'
 
 import { getPropQuorumReached } from '../utils'
 import { getPropStatus } from '../utils'
@@ -15,9 +15,20 @@ app.use('/', graphql({ db, schema }))
 app.use('/graphql', graphql({ db, schema }))
 
 app.get('/proposals', async (c) => {
-  const props = await db.query.proposal.findMany({
-    orderBy: (table, { desc }) => [desc(table.createdAtBlock)],
-  })
+  const governor = c.req.query('governor') as Address | undefined
+
+  let props
+
+  if (governor) {
+    props = await db.query.proposal.findMany({
+      orderBy: (table, { desc }) => [desc(table.createdAtBlock)],
+      where: (cols, { eq }) => eq(cols.governor, governor),
+    })
+  } else {
+    props = await db.query.proposal.findMany({
+      orderBy: (table, { desc }) => [desc(table.createdAtBlock)],
+    })
+  }
 
   if (!props) {
     return c.json({ error: 'Proposals not found' }, 404)
