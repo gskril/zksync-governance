@@ -98,8 +98,8 @@ export default async function Delegates({ searchParams }: Props) {
               className="w-28 -rotate-3 rounded-3xl border-6 border-white shadow-[0_0_22px_0_#00000029] md:w-40"
             />
 
-            <div className="space-y-3">
-              <h1 className="space-y-3">
+            <div className="space-y-2">
+              <h1 className="space-y-2">
                 <span className="line block text-2xl font-bold leading-none text-brand-primary">
                   ZKsync
                 </span>{' '}
@@ -107,6 +107,7 @@ export default async function Delegates({ searchParams }: Props) {
                   Delegates
                 </span>
               </h1>
+              <span className="text-sm text-zinc-500">Quorum: 630M</span>
             </div>
           </div>
         </div>

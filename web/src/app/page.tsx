@@ -26,7 +26,7 @@ export default async function Home() {
             />
 
             <div className="space-y-3">
-              <h1 className="space-y-3">
+              <h1 className="space-y-2">
                 <span className="line block text-2xl font-bold leading-none text-brand-primary">
                   ZKsync
                 </span>{' '}
