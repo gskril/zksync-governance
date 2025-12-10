@@ -58,7 +58,7 @@ export function getSummary(description: string) {
     return null
   }
 
-  return oneSentenceSummaryRow[1]?.[0]?.text ?? null
+  return oneSentenceSummaryRow[1]?.map((cell) => cell.text).join('') ?? null
 }
 
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/governance/Governor.sol#L138
