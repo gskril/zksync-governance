@@ -29,7 +29,7 @@ export function ConnectButton() {
         <DropdownMenuTrigger
           className={cn(
             buttonVariants({}),
-            'border h-fit gap-1.5 rounded-full bg-white pb-1 pl-1 pr-4 pt-1 text-foreground hover:bg-white/90'
+            'border h-fit gap-1.5 rounded-full bg-white pb-1 px-1 sm:pr-4 pt-1 text-foreground hover:bg-white/90'
           )}
         >
           <img
@@ -41,7 +41,9 @@ export function ConnectButton() {
             alt={nameWithFallback(ensName, address)}
             className="size-8 rounded-full object-cover"
           />
-          {nameWithFallback(ensName, address)}
+          <span className="hidden sm:block">
+            {nameWithFallback(ensName, address)}
+          </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => disconnect()}>
@@ -58,7 +60,7 @@ export function ConnectButton() {
       variant="primary"
       onClick={() => openConnectModal?.()}
     >
-      <Wallet />
+      <Wallet className="hidden sm:block" />
       Connect
     </Button>
   )
