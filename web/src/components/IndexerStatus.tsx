@@ -23,8 +23,8 @@ export function IndexerStatus() {
 
       const currentTimestamp = Math.floor(Date.now() / 1000)
 
-      // Check if the current timestamp is within 30 seconds of the block timestamp
-      const isReady = currentTimestamp - json.zkSync.block.timestamp < 30
+      // Check if the current timestamp is within 90 seconds of the block timestamp
+      const isReady = currentTimestamp - json.zkSync.block.timestamp < 90
 
       return { isReady, status: json }
     },
