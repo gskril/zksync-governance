@@ -10,7 +10,7 @@ import {
 import { formatTimestamp, truncateAddress } from '@/lib/utils'
 import { Nav } from '@/components/Nav'
 import { Metadata } from 'next'
-import { delegateNames } from '@/lib/names'
+import { delegateNames } from 'indexer/names'
 import { Address } from 'viem'
 import { getPublicClient } from 'wagmi/actions'
 import { wagmiConfigForServer } from '@/lib/web3-server'

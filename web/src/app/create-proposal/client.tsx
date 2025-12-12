@@ -2,7 +2,7 @@
 
 import { Nav } from '@/components/Nav'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { InputGroup, InputWrapper } from '@/components/ui/input'
+import { InputWithLabel, InputWrapper } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { bigintToFormattedString, cn, GOVERNORS } from '@/lib/utils'
 import {
@@ -275,7 +275,7 @@ function TransactionGroup({
         <MinusIcon />
       </Button>
 
-      <InputGroup
+      <InputWithLabel
         label="Target Address"
         placeholder="0x1234..."
         value={transaction.target}
@@ -283,7 +283,7 @@ function TransactionGroup({
         data-1p-ignore
         required
       />
-      <InputGroup
+      <InputWithLabel
         label="Value of ETH (in wei)"
         placeholder="0"
         type="number"

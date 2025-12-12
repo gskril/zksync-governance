@@ -1,4 +1,4 @@
-import { Address } from 'viem'
+import type { Address } from 'viem'
 
 // These should take precedence over ENS names
 // All converted to lowercase to match the indexer

@@ -1,13 +1,5 @@
 import { Footer } from '@/components/Footer'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
@@ -16,12 +8,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import { bigintToFormattedString, cn } from '@/lib/utils'
 import { Nav } from '@/components/Nav'
 import { getDelegates, DELEGATES_PER_PAGE } from '@/hooks/useDelegates'
-import { DelegateName } from '@/components/DelegateName'
+
 import { Metadata } from 'next'
-import Link from 'next/link'
+import { DelegatesClient } from './client'
+import { Suspense } from 'react'
 
 // Serve from cache but revalidate every 60 seconds (ISR)
 export const revalidate = 60
@@ -32,14 +24,14 @@ export const metadata: Metadata = {
 }
 
 type Props = {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; q?: string }>
 }
 
 export default async function Delegates({ searchParams }: Props) {
-  const { page: pageParam } = await searchParams
-  const currentPage = Math.max(1, parseInt(pageParam ?? '1', 10) || 1)
-  const delegates = await getDelegates(currentPage)
-  const totalPages = 100
+  const { page: _page, q } = await searchParams
+  const currentPage = Math.max(1, parseInt(_page ?? '1', 10) || 1)
+  const delegates = await getDelegates({ page: currentPage, q })
+  const totalPages = q ? 1 : 100
 
   // Calculate the rank offset based on current page
   const rankOffset = (currentPage - 1) * DELEGATES_PER_PAGE
@@ -84,7 +76,7 @@ export default async function Delegates({ searchParams }: Props) {
   }
 
   return (
-    <div className="container">
+    <div className="container relative">
       <Nav />
 
       <div className="mb-8">
@@ -113,104 +105,58 @@ export default async function Delegates({ searchParams }: Props) {
         </div>
       </div>
 
-      <div className="shadow-custom-card rounded-xl border overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-14 hidden md:table-cell">Rank</TableHead>
-              <TableHead>Delegate</TableHead>
-              <TableHead className="w-36">Voting Power</TableHead>
-              <TableHead className="hidden w-52 text-right lg:table-cell">
-                Vote History
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {delegates.map((delegate, index) => (
-              <TableRow key={delegate.address} className="group">
-                <TableCell className="hidden md:table-cell text-muted-foreground">
-                  {rankOffset + index + 1}
-                </TableCell>
-                <TableCell className="md:max-w-0">
-                  <Link href={`/delegates/${delegate.address}`}>
-                    <DelegateName address={delegate.address} />
-                  </Link>
-                </TableCell>
+      <DelegatesClient delegates={delegates} rankOffset={rankOffset} />
 
-                <TableCell>
-                  {bigintToFormattedString(BigInt(delegate.votes ?? 0))}
-                </TableCell>
+      {totalPages > 1 && (
+        <Pagination className="mt-6">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href={
+                  currentPage > 1 ? `/delegates?page=${currentPage - 1}` : '#'
+                }
+                aria-disabled={currentPage <= 1}
+                className={
+                  currentPage <= 1 ? 'pointer-events-none opacity-50' : ''
+                }
+              />
+            </PaginationItem>
 
-                <TableCell className="hidden text-right lg:table-cell">
-                  <div className="flex items-center justify-end gap-1">
-                    {delegate.voteCasts.map((vote) => (
-                      <div
-                        key={vote.proposalId}
-                        className={cn(
-                          'size-6 rounded-full',
-                          vote.support === -1 && 'bg-zinc-200',
-                          vote.support === 0 && 'bg-brand-red',
-                          vote.support === 1 && 'bg-brand-green',
-                          vote.support === 2 && 'bg-zinc-500'
-                        )}
-                      />
-                    ))}
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            {getPageNumbers().map((page, i) =>
+              page === 'ellipsis' ? (
+                <PaginationItem key={`ellipsis-${i}`}>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              ) : (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    href={`/delegates?page=${page}`}
+                    isActive={page === currentPage}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            )}
 
-      <Pagination className="mt-6">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href={
-                currentPage > 1 ? `/delegates?page=${currentPage - 1}` : '#'
-              }
-              aria-disabled={currentPage <= 1}
-              className={
-                currentPage <= 1 ? 'pointer-events-none opacity-50' : ''
-              }
-            />
-          </PaginationItem>
-
-          {getPageNumbers().map((page, i) =>
-            page === 'ellipsis' ? (
-              <PaginationItem key={`ellipsis-${i}`}>
-                <PaginationEllipsis />
-              </PaginationItem>
-            ) : (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  href={`/delegates?page=${page}`}
-                  isActive={page === currentPage}
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            )
-          )}
-
-          <PaginationItem>
-            <PaginationNext
-              href={
-                currentPage < totalPages
-                  ? `/delegates?page=${currentPage + 1}`
-                  : '#'
-              }
-              aria-disabled={currentPage >= totalPages}
-              className={
-                currentPage >= totalPages
-                  ? 'pointer-events-none opacity-50'
-                  : ''
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            <PaginationItem>
+              <PaginationNext
+                href={
+                  currentPage < totalPages
+                    ? `/delegates?page=${currentPage + 1}`
+                    : '#'
+                }
+                aria-disabled={currentPage >= totalPages}
+                className={
+                  currentPage >= totalPages
+                    ? 'pointer-events-none opacity-50'
+                    : ''
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       <Footer />
     </div>

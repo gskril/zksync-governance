@@ -1,7 +1,19 @@
-import { db } from 'ponder:api'
-import type { Address } from 'viem'
+import { db, publicClients } from 'ponder:api'
+import { type Address, createPublicClient, isAddress } from 'viem'
 
-export async function getDelegates(limit: number, offset: number) {
+import { delegateNames } from '../names'
+
+type GetDelegatesParams = {
+  limit: number
+  offset: number
+  q?: string
+}
+
+export async function getDelegates({
+  limit,
+  offset,
+  q: _q,
+}: GetDelegatesParams) {
   const currentUnitTimestamp = new Date().getTime() / 1000
 
   const latest5Proposals = await db.query.proposal.findMany({
@@ -13,12 +25,47 @@ export async function getDelegates(limit: number, offset: number) {
 
   const latest5ProposalIds = latest5Proposals.map((proposal) => proposal.id)
 
-  const delegatesWithoutVotes = await db.query.account.findMany({
-    limit,
-    offset,
-    orderBy: (cols, { desc }) => [desc(cols.votes)],
-    where: (cols, { isNotNull }) => isNotNull(cols.votes),
-  })
+  let delegatesWithoutVotes
+
+  if (_q) {
+    let q: Address | undefined
+
+    if (isAddress(_q)) {
+      q = _q
+    } else if (_q.includes('.') && _q.length > 3) {
+      // ENS lookup
+      const address = await publicClients['mainnet'].getEnsAddress({ name: _q })
+      if (address) {
+        q = address
+      }
+    } else {
+      // Manual name lookup
+      const manualName = Object.entries(delegateNames).find(
+        ([_, name]) => name.toLowerCase() === _q.toLowerCase()
+      )
+      if (manualName) {
+        q = manualName[0] as Address
+      }
+    }
+
+    if (!q) {
+      return []
+    }
+
+    delegatesWithoutVotes = await db.query.account.findMany({
+      limit,
+      offset,
+      orderBy: (cols, { desc }) => [desc(cols.votes)],
+      where: (cols, { eq }) => eq(cols.address, q),
+    })
+  } else {
+    delegatesWithoutVotes = await db.query.account.findMany({
+      limit,
+      offset,
+      orderBy: (cols, { desc }) => [desc(cols.votes)],
+      where: (cols, { isNotNull }) => isNotNull(cols.votes),
+    })
+  }
 
   const votes = await db.query.voteCastEvent.findMany({
     where: (cols, { inArray, and }) =>

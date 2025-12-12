@@ -7,7 +7,7 @@ import { useEnsName } from 'wagmi'
 
 import { bigintToFormattedString, cn, nameWithFallback } from '@/lib/utils'
 import { Typography } from '@/components/ui/typography'
-import { delegateNames } from '@/lib/names'
+import { delegateNames } from 'indexer/names'
 import { env } from '@/lib/env'
 import { Address } from 'viem'
 

@@ -37,11 +37,15 @@ export function InputWrapper({
   )
 }
 
-type InputGroupProps = React.ComponentProps<'input'> & {
+type InputWithLabelProps = React.ComponentProps<'input'> & {
   label: string
 }
 
-export function InputGroup({ label, className, ...props }: InputGroupProps) {
+export function InputWithLabel({
+  label,
+  className,
+  ...props
+}: InputWithLabelProps) {
   return (
     <InputWrapper label={label} className={className}>
       <Input {...props} />

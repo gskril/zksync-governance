@@ -89,8 +89,9 @@ app.get('/proposals/:proposalId', async (c) => {
 app.get('/delegates', async (c) => {
   const limit = Math.min(Number(c.req.query('limit')) || 50, 50)
   const offset = Number(c.req.query('offset')) || 0
+  const q = c.req.query('q') || ''
 
-  const delegates = await getDelegates(limit, offset)
+  const delegates = await getDelegates({ limit, offset, q })
   return c.json(replaceBigInts(delegates, (v) => String(v)))
 })
 

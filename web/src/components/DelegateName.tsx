@@ -1,7 +1,7 @@
 'use client'
 
 import { env } from '@/lib/env'
-import { delegateNames } from '@/lib/names'
+import { delegateNames } from 'indexer/names'
 import { nameWithFallback } from '@/lib/utils'
 import { Address } from 'viem'
 import { useEnsName } from 'wagmi'

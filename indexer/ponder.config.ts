@@ -17,6 +17,10 @@ export default createConfig({
       id: 324,
       rpc: loadBalance([http('https://mainnet.era.zksync.io')]),
     },
+    mainnet: {
+      id: 1,
+      rpc: http('https://ethereum-rpc.publicnode.com'),
+    },
   },
   contracts: {
     Governor: {
