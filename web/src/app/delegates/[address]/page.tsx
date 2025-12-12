@@ -21,6 +21,8 @@ import { Typography } from '@/components/ui/typography'
 import Link from 'next/link'
 import { getPropStatus } from 'indexer/utils'
 import { Badge } from '@/components/ui/badge'
+import { env } from '@/lib/env'
+import { CopyAddressButton, CopyButton } from '@/components/CopyButton'
 
 // Serve from cache but revalidate every 60 seconds (ISR)
 export const revalidate = 60
@@ -56,14 +58,15 @@ export async function generateMetadata({
   }
 }
 
-export default async function Delegate({
-  params,
-}: {
+type DelegatePageProps = {
   params: Promise<{ address: Address }>
-}) {
+}
+
+export default async function Delegate({ params }: DelegatePageProps) {
   const { address } = await params
   const delegate = await getDelegate(address)
   const name = await getDelegateName(address)
+  const isEnsName = name?.includes('.')
 
   if (!delegate) {
     return notFound()
@@ -76,18 +79,28 @@ export default async function Delegate({
       <div className="mb-8">
         <div className="flex flex-col justify-between gap-3 md:flex-row md:gap-12">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
-            {/* TODO: Load avatar */}
-            {/* <img
-              src="/img/logo-filled-dark.svg"
+            <img
+              src={
+                isEnsName
+                  ? `https://ens-api.gregskril.com/avatar/${name}?width=320&fallback=${env.BASE_URL}/img/fallback-avatar.svg`
+                  : '/img/fallback-avatar.svg'
+              }
               alt="ZKsync Logo"
               width={160}
               height={160}
-              className="w-28 -rotate-3 rounded-3xl border-6 border-white shadow-[0_0_22px_0_#00000029] md:w-40"
-            /> */}
+              className="w-28 rounded-full object-cover border-6 border-white shadow-[0_0_22px_0_#00000029] md:w-40"
+            />
 
-            <h1 className="space-y-3 text-3xl font-bold leading-none lg:text-5xl">
-              {name}
-            </h1>
+            <div className="space-y-3">
+              <h1 className="space-y-3 text-3xl font-bold leading-none lg:text-5xl">
+                {name}
+              </h1>
+              {!name.includes('...') && (
+                <div className="flex items-center gap-1.5">
+                  <CopyAddressButton address={address} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -106,63 +119,72 @@ export default async function Delegate({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {delegate.voteCasts.map(({ proposalId, proposal, support }) => (
-              <TableRow key={proposalId} className="group">
-                {/* Not sure why max-w-0 is needed here, but it seems to work fine in all browsers */}
-                <TableCell className="md:max-w-0">
-                  <div className="flex flex-col gap-2">
-                    <Typography
-                      as="span"
-                      className="text-xs font-medium text-zinc-500"
-                    >
-                      {formatTimestamp(proposal.createdAtTimestamp)}
-                    </Typography>
-                    <Link
-                      href={`/proposal/${proposalId}`}
-                      className="font-medium hover:underline group-hover:text-brand-primary"
-                    >
-                      {proposal.title}
-                    </Link>
-                    <Typography
-                      as="p"
-                      className="text-sm text-zinc-500 max-w-full line-clamp-2"
-                    >
-                      {proposal.summary}
-                    </Typography>
-                  </div>
-                </TableCell>
-
-                <TableCell className="hidden md:table-cell">
-                  <ProposalStatus
-                    proposal={
-                      {
-                        ...proposal,
-                        status: getPropStatus(proposal as any),
-                      } as any
-                    }
-                  />
-                </TableCell>
-
-                <TableCell className="hidden text-right lg:table-cell">
-                  <Badge
-                    variant={
-                      support === 0
-                        ? 'destructive'
-                        : support === 2
-                          ? 'secondary'
-                          : 'success'
-                    }
-                    className="uppercase"
-                  >
-                    {support === 0
-                      ? 'Against'
-                      : support === 2
-                        ? 'Abstain'
-                        : 'For'}
-                  </Badge>
+            {delegate.voteCasts.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center">
+                  This account has not voted on any proposals yet.
                 </TableCell>
               </TableRow>
-            ))}
+            )}
+
+            {delegate.voteCasts.length > 0 &&
+              delegate.voteCasts.map(({ proposalId, proposal, support }) => (
+                <TableRow key={proposalId} className="group">
+                  {/* Not sure why max-w-0 is needed here, but it seems to work fine in all browsers */}
+                  <TableCell className="md:max-w-0">
+                    <div className="flex flex-col gap-2">
+                      <Typography
+                        as="span"
+                        className="text-xs font-medium text-zinc-500"
+                      >
+                        {formatTimestamp(proposal.createdAtTimestamp)}
+                      </Typography>
+                      <Link
+                        href={`/proposal/${proposalId}`}
+                        className="font-medium hover:underline group-hover:text-brand-primary"
+                      >
+                        {proposal.title}
+                      </Link>
+                      <Typography
+                        as="p"
+                        className="text-sm text-zinc-500 max-w-full line-clamp-2"
+                      >
+                        {proposal.summary}
+                      </Typography>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="hidden md:table-cell">
+                    <ProposalStatus
+                      proposal={
+                        {
+                          ...proposal,
+                          status: getPropStatus(proposal as any),
+                        } as any
+                      }
+                    />
+                  </TableCell>
+
+                  <TableCell className="hidden text-right lg:table-cell">
+                    <Badge
+                      variant={
+                        support === 0
+                          ? 'destructive'
+                          : support === 2
+                            ? 'secondary'
+                            : 'success'
+                      }
+                      className="uppercase"
+                    >
+                      {support === 0
+                        ? 'Against'
+                        : support === 2
+                          ? 'Abstain'
+                          : 'For'}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>
