@@ -83,10 +83,7 @@ export function Typography({ children, className, as, ...props }: Props) {
       )
     case 'p':
       return (
-        <p
-          className={cn('leading-7 [&:not(:last-child)]:mb-6', className)}
-          {...props}
-        >
+        <p className={cn('leading-7 not-last:mb-6', className)} {...props}>
           {children}
         </p>
       )

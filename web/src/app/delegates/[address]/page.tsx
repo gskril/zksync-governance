@@ -7,7 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { formatTimestamp, truncateAddress } from '@/lib/utils'
+import {
+  bigintToFormattedString,
+  formatTimestamp,
+  truncateAddress,
+} from '@/lib/utils'
 import { Nav } from '@/components/Nav'
 import { Metadata } from 'next'
 import { delegateNames } from 'indexer/names'
@@ -23,6 +27,9 @@ import { getPropStatus } from 'indexer/utils'
 import { Badge } from '@/components/ui/badge'
 import { env } from '@/lib/env'
 import { CopyAddressButton, CopyButton } from '@/components/CopyButton'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { DelegateButton } from '@/components/DelegateButton'
 
 // Serve from cache but revalidate every 60 seconds (ISR)
 export const revalidate = 60
@@ -44,11 +51,13 @@ async function getDelegateName(address: Address) {
   return name
 }
 
+type DelegatePageProps = {
+  params: Promise<{ address: Address }>
+}
+
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ address: Address }>
-}): Promise<Metadata> {
+}: DelegatePageProps): Promise<Metadata> {
   const { address } = await params
   const name = await getDelegateName(address)
 
@@ -56,10 +65,6 @@ export async function generateMetadata({
     title: `${name} - ZKsync Delegate`,
     description: `View the voting history of ${name} as a delegate of the ZKsync Governance System.`,
   }
-}
-
-type DelegatePageProps = {
-  params: Promise<{ address: Address }>
 }
 
 export default async function Delegate({ params }: DelegatePageProps) {
@@ -77,7 +82,7 @@ export default async function Delegate({ params }: DelegatePageProps) {
       <Nav />
 
       <div className="mb-8">
-        <div className="flex flex-col justify-between gap-3 md:flex-row md:gap-12">
+        <div className="flex flex-col justify-between gap-3 md:flex-row md:gap-12 items-center">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <img
               src={
@@ -102,6 +107,17 @@ export default async function Delegate({ params }: DelegatePageProps) {
               )}
             </div>
           </div>
+
+          <Card className="h-fit flex flex-row items-center justify-between gap-10 p-4 w-full md:w-fit">
+            <div className="flex flex-col">
+              <Typography className="text-sm">Voting Power</Typography>
+              <Typography className="font-bold text-xl">
+                {bigintToFormattedString(BigInt(delegate.votes ?? 0))} ZK
+              </Typography>
+            </div>
+
+            <DelegateButton delegate={delegate} />
+          </Card>
         </div>
       </div>
 
