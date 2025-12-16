@@ -1,4 +1,19 @@
+import { delegateNames } from 'indexer/names'
+import { getPropStatus } from 'indexer/utils'
+import { Metadata } from 'next'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { Address } from 'viem'
+import { getPublicClient } from 'wagmi/actions'
+
+import { CopyAddressButton, CopyButton } from '@/components/CopyButton'
+import { DelegateButton } from '@/components/DelegateButton'
 import { Footer } from '@/components/Footer'
+import { Nav } from '@/components/Nav'
+import { ProposalStatus } from '@/components/ProposalStatus'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -7,29 +22,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Typography } from '@/components/ui/typography'
+import { getDelegate } from '@/hooks/useDelegate'
+import { env } from '@/lib/env'
 import {
   bigintToFormattedString,
   formatTimestamp,
   truncateAddress,
 } from '@/lib/utils'
-import { Nav } from '@/components/Nav'
-import { Metadata } from 'next'
-import { delegateNames } from 'indexer/names'
-import { Address } from 'viem'
-import { getPublicClient } from 'wagmi/actions'
 import { wagmiConfigForServer } from '@/lib/web3-server'
-import { getDelegate } from '@/hooks/useDelegate'
-import { notFound } from 'next/navigation'
-import { ProposalStatus } from '@/components/ProposalStatus'
-import { Typography } from '@/components/ui/typography'
-import Link from 'next/link'
-import { getPropStatus } from 'indexer/utils'
-import { Badge } from '@/components/ui/badge'
-import { env } from '@/lib/env'
-import { CopyAddressButton, CopyButton } from '@/components/CopyButton'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { DelegateButton } from '@/components/DelegateButton'
 
 // Serve from cache but revalidate every 60 seconds (ISR)
 export const revalidate = 60

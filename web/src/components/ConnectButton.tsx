@@ -1,5 +1,7 @@
 'use client'
 
+import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { Wallet } from 'lucide-react'
 import { useAccount, useDisconnect, useEnsName } from 'wagmi'
 
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -9,11 +11,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { cn, nameWithFallback } from '@/lib/utils'
-import { Wallet } from 'lucide-react'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useMounted } from '@/hooks/useMounted'
 import { env } from '@/lib/env'
+import { cn, nameWithFallback } from '@/lib/utils'
 
 export function ConnectButton() {
   const { disconnect } = useDisconnect()

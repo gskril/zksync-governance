@@ -2,6 +2,7 @@
 
 import { ZkTokenGovernor as GovernorContract } from 'indexer/contracts'
 import { EnhancedProposal } from 'indexer/types'
+import { CircleAlert } from 'lucide-react'
 import { useEffect } from 'react'
 import {
   useAccount,
@@ -28,10 +29,10 @@ import {
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
-import { bigintToFormattedString } from '@/lib/utils'
 import revalidateProposal from '@/lib/actions'
+import { bigintToFormattedString } from '@/lib/utils'
+
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
-import { CircleAlert } from 'lucide-react'
 
 export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
   const { address } = useAccount()

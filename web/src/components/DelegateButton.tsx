@@ -1,20 +1,9 @@
 'use client'
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-
-import { Button } from './ui/button'
-import { DelegateName } from '@/components/DelegateName'
-import { bigintToFormattedString, cn } from '@/lib/utils'
+import { ZkToken } from 'indexer/contracts'
 import { GetDelegateResponse } from 'indexer/types'
 import { ArrowDown, Check } from 'lucide-react'
-import { ZkToken } from 'indexer/contracts'
-import { zksync } from 'wagmi/chains'
+import { useState } from 'react'
 import {
   useAccount,
   useChainId,
@@ -23,9 +12,21 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi'
+import { zksync } from 'wagmi/chains'
+
+import { DelegateName } from '@/components/DelegateName'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { bigintToFormattedString, cn } from '@/lib/utils'
+
+import { Button } from './ui/button'
 import { Card } from './ui/card'
 import { Typography } from './ui/typography'
-import { useState } from 'react'
 
 type DelegateButtonProps = {
   delegate: NonNullable<GetDelegateResponse>

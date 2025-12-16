@@ -1,12 +1,12 @@
 import { type ClassValue, clsx } from 'clsx'
+import {
+  ZkGovOpsGovernor,
+  ZkProtocolGovernor,
+  ZkTokenGovernor,
+} from 'indexer/contracts'
 import { EnhancedProposal } from 'indexer/types'
 import { twMerge } from 'tailwind-merge'
 import { Address, getAddress } from 'viem'
-import {
-  ZkTokenGovernor,
-  ZkProtocolGovernor,
-  ZkGovOpsGovernor,
-} from 'indexer/contracts'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

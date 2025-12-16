@@ -1,10 +1,23 @@
 'use client'
 
+import { ZkProtocolGovernor, ZkToken, ZkTokenGovernor } from 'indexer/contracts'
+import { InfoIcon, MinusIcon, PlusIcon } from 'lucide-react'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { Address, Hex, decodeEventLog, isAddress, isHex } from 'viem'
+import {
+  useAccount,
+  useReadContract,
+  useSwitchChain,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi'
+import { zksync } from 'wagmi/chains'
+
 import { Nav } from '@/components/Nav'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { InputWithLabel, InputWrapper } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { bigintToFormattedString, cn, GOVERNORS } from '@/lib/utils'
 import {
   Select,
   SelectContent,
@@ -13,20 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ZkProtocolGovernor, ZkToken, ZkTokenGovernor } from 'indexer/contracts'
-import { InfoIcon, MinusIcon, PlusIcon } from 'lucide-react'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { Address, decodeEventLog, Hex, isAddress, isHex } from 'viem'
-import {
-  useAccount,
-  useReadContract,
-  useSwitchChain,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from 'wagmi'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { zksync } from 'wagmi/chains'
+import { Textarea } from '@/components/ui/textarea'
+import { GOVERNORS, bigintToFormattedString, cn } from '@/lib/utils'
 
 type Transaction = {
   target: string

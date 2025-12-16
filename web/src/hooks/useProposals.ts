@@ -1,7 +1,8 @@
-import { env } from '@/lib/env'
 import { useQuery } from '@tanstack/react-query'
 import { EnhancedProposal } from 'indexer/types'
 import { Address } from 'viem'
+
+import { env } from '@/lib/env'
 
 export function useProposals() {
   return useQuery({

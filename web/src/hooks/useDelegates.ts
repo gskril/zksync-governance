@@ -1,5 +1,6 @@
-import { env } from '@/lib/env'
 import { GetDelegatesResponse } from 'indexer/types'
+
+import { env } from '@/lib/env'
 
 export const DELEGATES_PER_PAGE = 50
 

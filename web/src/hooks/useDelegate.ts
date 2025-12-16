@@ -1,6 +1,7 @@
-import { env } from '@/lib/env'
 import { GetDelegateResponse } from 'indexer/types'
 import { Address } from 'viem'
+
+import { env } from '@/lib/env'
 
 export async function getDelegate(address: Address) {
   const path = `/delegates/${address}`

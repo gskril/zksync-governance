@@ -1,8 +1,10 @@
+import '@rainbow-me/rainbowkit/styles.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+
 import { ClientProviders } from '@/components/ClientProviders'
 import { IndexerStatus } from '@/components/IndexerStatus'
-import '@rainbow-me/rainbowkit/styles.css'
+
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })

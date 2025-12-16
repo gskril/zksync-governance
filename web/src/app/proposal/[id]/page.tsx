@@ -1,9 +1,12 @@
 import { EnhancedProposalWithVotes } from 'indexer/types'
 import { ArrowDown } from 'lucide-react'
+import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
+import { CopyButton } from '@/components/CopyButton'
 import { Footer } from '@/components/Footer'
+import { Nav } from '@/components/Nav'
 import { ProposalActionButton } from '@/components/ProposalActionButton'
 import { ProposalStatus } from '@/components/ProposalStatus'
 import { ProposalVote } from '@/components/ProposalVote'
@@ -23,6 +26,7 @@ import {
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Typography } from '@/components/ui/typography'
+import { getProposal } from '@/hooks/useProposal'
 import {
   bigintToFormattedString,
   formatTimestamp,
@@ -30,10 +34,6 @@ import {
   nameWithFallback,
   parseVotes,
 } from '@/lib/utils'
-import { getProposal } from '@/hooks/useProposal'
-import { Nav } from '@/components/Nav'
-import { CopyButton } from '@/components/CopyButton'
-import { notFound } from 'next/navigation'
 
 export async function generateMetadata({
   params,

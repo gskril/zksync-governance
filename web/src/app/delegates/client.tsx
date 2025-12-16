@@ -1,5 +1,18 @@
 'use client'
 
+import { GetDelegatesResponse } from 'indexer/types'
+import { SearchIcon } from 'lucide-react'
+import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useDebounce } from 'use-debounce'
+
+import { DelegateName } from '@/components/DelegateName'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '@/components/ui/input-group'
 import {
   Table,
   TableBody,
@@ -8,20 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { useDebounce } from 'use-debounce'
-
 import { bigintToFormattedString, cn } from '@/lib/utils'
-import { DelegateName } from '@/components/DelegateName'
-import Link from 'next/link'
-import { GetDelegatesResponse } from 'indexer/types'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { SearchIcon } from 'lucide-react'
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from '@/components/ui/input-group'
-import { useEffect, useState } from 'react'
 
 export function DelegatesClient({
   delegates,

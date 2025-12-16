@@ -1,15 +1,15 @@
 'use client'
 
-import Link from 'next/link'
+import { delegateNames } from 'indexer/names'
 import { EnhancedProposalWithVotes } from 'indexer/types'
+import Link from 'next/link'
+import { Address } from 'viem'
 // import { useInView } from 'react-intersection-observer'
 import { useEnsName } from 'wagmi'
 
-import { bigintToFormattedString, cn, nameWithFallback } from '@/lib/utils'
 import { Typography } from '@/components/ui/typography'
-import { delegateNames } from 'indexer/names'
 import { env } from '@/lib/env'
-import { Address } from 'viem'
+import { bigintToFormattedString, cn, nameWithFallback } from '@/lib/utils'
 
 type Props = {
   vote?: EnhancedProposalWithVotes['votes'][number]

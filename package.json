@@ -10,10 +10,13 @@
   "scripts": {
     "dev:web": "bun --filter=web run dev",
     "dev:indexer": "bun --filter=indexer run dev",
-    "postinstall": "bun --filter=indexer run build"
+    "postinstall": "bun --filter=indexer run build",
+    "format": "prettier --write \"**/*.{ts,tsx}\""
   },
   "devDependencies": {
-    "bun-types": "1.2.8"
+    "@trivago/prettier-plugin-sort-imports": "^6.0.0",
+    "bun-types": "1.2.8",
+    "prettier": "^3.7.4"
   },
   "peerDependencies": {
     "typescript": "5.9.3"

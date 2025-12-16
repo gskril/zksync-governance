@@ -1,7 +1,8 @@
 'use client'
 
-import { env } from '@/lib/env'
 import { useQuery } from '@tanstack/react-query'
+
+import { env } from '@/lib/env'
 
 const url = new URL('/status', env.PONDER_URL).toString()
 

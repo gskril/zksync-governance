@@ -1,12 +1,13 @@
 import { connectorsForWallets } from '@rainbow-me/rainbowkit'
 import {
+  baseAccount,
   metaMaskWallet,
   rainbowWallet,
-  baseAccount,
-  walletConnectWallet,
   safeWallet,
+  walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets'
 import { createConfig } from 'wagmi'
+
 import { env } from './env'
 import { chains, transports } from './web3-server'
 

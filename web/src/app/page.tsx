@@ -1,8 +1,10 @@
-import { Footer } from '@/components/Footer'
-import { getProposals } from '@/hooks/useProposals'
-import { Nav } from '@/components/Nav'
-import { ProposalsClient } from './client'
 import { Suspense } from 'react'
+
+import { Footer } from '@/components/Footer'
+import { Nav } from '@/components/Nav'
+import { getProposals } from '@/hooks/useProposals'
+
+import { ProposalsClient } from './client'
 
 // Serve from cache but revalidate every 60 seconds (ISR)
 export const revalidate = 60

@@ -1,10 +1,11 @@
 'use client'
 
-import { env } from '@/lib/env'
 import { delegateNames } from 'indexer/names'
-import { cn, nameWithFallback } from '@/lib/utils'
 import { Address } from 'viem'
 import { useEnsName } from 'wagmi'
+
+import { env } from '@/lib/env'
+import { cn, nameWithFallback } from '@/lib/utils'
 
 type DelegateNameProps = {
   address: Address

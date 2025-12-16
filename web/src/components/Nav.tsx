@@ -1,9 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { ConnectButton } from './ConnectButton'
 import { usePathname } from 'next/navigation'
+
 import { cn } from '@/lib/utils'
+
+import { ConnectButton } from './ConnectButton'
 
 const links = [
   { href: '/', label: 'Proposals' },

@@ -1,7 +1,20 @@
 'use client'
 
+import { EnhancedProposal } from 'indexer/types'
+import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { isAddress } from 'viem'
+
 import { ProposalStatus } from '@/components/ProposalStatus'
+import { buttonVariants } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -10,28 +23,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Typography } from '@/components/ui/typography'
 import {
+  GOVERNORS,
   bigintToFormattedString,
   cn,
   formatTimestamp,
   getGovernorName,
   getPercentageOfTotalVotes,
   getTotalVotes,
-  GOVERNORS,
 } from '@/lib/utils'
-import { Typography } from '@/components/ui/typography'
-import { buttonVariants } from '@/components/ui/button'
-import { ChevronRight } from 'lucide-react'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { EnhancedProposal } from 'indexer/types'
-import { isAddress } from 'viem'
 
 type Props = {
   proposals: EnhancedProposal[]

@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { Button } from './ui/button'
 import { Check, Copy } from 'lucide-react'
+import { useState } from 'react'
+
 import { truncateAddress } from '@/lib/utils'
+
+import { Button } from './ui/button'
 
 type Props = {
   text: string

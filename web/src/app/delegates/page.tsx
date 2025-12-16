@@ -1,4 +1,8 @@
+import { Metadata } from 'next'
+import { Suspense } from 'react'
+
 import { Footer } from '@/components/Footer'
+import { Nav } from '@/components/Nav'
 import {
   Pagination,
   PaginationContent,
@@ -8,12 +12,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import { Nav } from '@/components/Nav'
-import { getDelegates, DELEGATES_PER_PAGE } from '@/hooks/useDelegates'
+import { DELEGATES_PER_PAGE, getDelegates } from '@/hooks/useDelegates'
 
-import { Metadata } from 'next'
 import { DelegatesClient } from './client'
-import { Suspense } from 'react'
 
 // Serve from cache but revalidate every 60 seconds (ISR)
 export const revalidate = 60

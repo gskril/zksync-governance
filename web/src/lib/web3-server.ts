@@ -1,5 +1,6 @@
 import { createConfig, http } from 'wagmi'
-import { zksync, mainnet } from 'wagmi/chains'
+import { mainnet, zksync } from 'wagmi/chains'
+
 import { env } from './env'
 
 export const chains = [zksync, mainnet] as const
