@@ -1,7 +1,6 @@
 import { db, publicClients } from 'ponder:api'
-import { type Address, createPublicClient, isAddress } from 'viem'
-
-import { delegateNames } from '../names'
+import { delegateNames } from 'shared'
+import { type Address, isAddress } from 'viem'
 
 type GetDelegatesParams = {
   limit: number

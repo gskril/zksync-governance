@@ -1,8 +1,8 @@
-import { delegateNames } from 'indexer/names'
 import { getPropStatus } from 'indexer/utils'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { delegateNames } from 'shared'
 import { Address } from 'viem'
 import { getPublicClient } from 'wagmi/actions'
 

@@ -16,6 +16,7 @@
     "hono": "^4.10.7",
     "marked": "^17.0.1",
     "ponder": "^0.15.13",
+    "shared": "workspace:*",
     "viem": "^2.41.2"
   },
   "devDependencies": {
@@ -28,8 +29,6 @@
   },
   "exports": {
     "./types": "./dist/src/types.js",
-    "./contracts": "./dist/contracts/index.js",
-    "./utils": "./dist/src/utils.js",
-    "./names": "./dist/src/names.js"
+    "./utils": "./dist/src/utils.js"
   }
 }

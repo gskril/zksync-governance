@@ -1,13 +1,12 @@
 import { loadBalance } from '@ponder/utils'
 import { createConfig } from 'ponder'
-import { http } from 'viem'
-
 import {
   ZkGovOpsGovernor,
   ZkProtocolGovernor,
   ZkToken,
   ZkTokenGovernor,
-} from './contracts'
+} from 'shared/contracts'
+import { http } from 'viem'
 
 const isDev = process.env.NODE_ENV === 'development'
 

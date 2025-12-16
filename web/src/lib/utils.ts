@@ -1,10 +1,10 @@
 import { type ClassValue, clsx } from 'clsx'
+import { EnhancedProposal } from 'indexer/types'
 import {
   ZkGovOpsGovernor,
   ZkProtocolGovernor,
   ZkTokenGovernor,
-} from 'indexer/contracts'
-import { EnhancedProposal } from 'indexer/types'
+} from 'shared/contracts'
 import { twMerge } from 'tailwind-merge'
 import { Address, getAddress } from 'viem'
 

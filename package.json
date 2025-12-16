@@ -10,7 +10,7 @@
   "scripts": {
     "dev:web": "bun --filter=web run dev",
     "dev:indexer": "bun --filter=indexer run dev",
-    "postinstall": "bun --filter=indexer run build",
+    "postinstall": "bun --filter=shared run build && bun --filter=indexer run build",
     "format": "prettier --write \"**/*.{ts,tsx}\""
   },
   "devDependencies": {

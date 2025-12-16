@@ -1,8 +1,8 @@
 'use client'
 
-import { delegateNames } from 'indexer/names'
 import { EnhancedProposalWithVotes } from 'indexer/types'
 import Link from 'next/link'
+import { delegateNames } from 'shared'
 import { Address } from 'viem'
 // import { useInView } from 'react-intersection-observer'
 import { useEnsName } from 'wagmi'

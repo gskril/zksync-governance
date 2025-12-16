@@ -1,9 +1,9 @@
 'use client'
 
-import { ZkToken } from 'indexer/contracts'
 import { GetDelegateResponse } from 'indexer/types'
 import { ArrowDown, Check } from 'lucide-react'
 import { useState } from 'react'
+import { ZkToken } from 'shared/contracts'
 import {
   useAccount,
   useChainId,

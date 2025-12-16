@@ -1,6 +1,6 @@
 'use client'
 
-import { delegateNames } from 'indexer/names'
+import { delegateNames } from 'shared'
 import { Address } from 'viem'
 import { useEnsName } from 'wagmi'
 

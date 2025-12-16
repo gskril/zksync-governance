@@ -1,7 +1,7 @@
 'use client'
 
-import { ZkTokenGovernor as GovernorContract } from 'indexer/contracts'
 import { EnhancedProposal } from 'indexer/types'
+import { ZkTokenGovernor as GovernorContract } from 'shared/contracts'
 import {
   useAccount,
   useSimulateContract,

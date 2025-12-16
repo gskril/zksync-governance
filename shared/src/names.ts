@@ -1,4 +1,4 @@
-import type { Address } from 'viem'
+type Address = `0x${string}`
 
 // These should take precedence over ENS names
 // All converted to lowercase to match the indexer

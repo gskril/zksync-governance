@@ -1,9 +1,9 @@
 'use client'
 
-import { ZkProtocolGovernor, ZkToken, ZkTokenGovernor } from 'indexer/contracts'
 import { InfoIcon, MinusIcon, PlusIcon } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { ZkProtocolGovernor, ZkToken, ZkTokenGovernor } from 'shared/contracts'
 import { Address, Hex, decodeEventLog, isAddress, isHex } from 'viem'
 import {
   useAccount,

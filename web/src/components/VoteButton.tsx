@@ -1,9 +1,9 @@
 'use client'
 
-import { ZkTokenGovernor as GovernorContract } from 'indexer/contracts'
 import { EnhancedProposal } from 'indexer/types'
 import { CircleAlert } from 'lucide-react'
 import { useEffect } from 'react'
+import { ZkTokenGovernor as GovernorContract } from 'shared/contracts'
 import {
   useAccount,
   useBlockNumber,
