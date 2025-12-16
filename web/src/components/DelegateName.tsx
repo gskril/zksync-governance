@@ -2,11 +2,16 @@
 
 import { env } from '@/lib/env'
 import { delegateNames } from 'indexer/names'
-import { nameWithFallback } from '@/lib/utils'
+import { cn, nameWithFallback } from '@/lib/utils'
 import { Address } from 'viem'
 import { useEnsName } from 'wagmi'
 
-export function DelegateName({ address }: { address: Address }) {
+type DelegateNameProps = {
+  address: Address
+  size?: 'sm' | 'md'
+}
+
+export function DelegateName({ address, size = 'md' }: DelegateNameProps) {
   const nickname = delegateNames[address]
 
   const { data: ensName } = useEnsName({
@@ -18,7 +23,13 @@ export function DelegateName({ address }: { address: Address }) {
   })
 
   return (
-    <div className="flex items-center gap-2">
+    <div
+      className={cn(
+        'flex items-center',
+        size === 'md' && 'gap-2',
+        size === 'sm' && 'gap-1'
+      )}
+    >
       <img
         src={
           ensName
@@ -26,9 +37,17 @@ export function DelegateName({ address }: { address: Address }) {
             : '/img/fallback-avatar.svg'
         }
         alt={nameWithFallback(nickname || ensName, address)}
-        className="size-8 rounded-full object-cover"
+        className={cn(
+          'rounded-full object-cover',
+          size === 'md' && 'size-8',
+          size === 'sm' && 'size-6'
+        )}
       />
-      <span>{nameWithFallback(nickname || ensName, address)}</span>
+      <span
+        className={cn(size === 'md' && 'text-base', size === 'sm' && 'text-sm')}
+      >
+        {nameWithFallback(nickname || ensName, address)}
+      </span>
     </div>
   )
 }
