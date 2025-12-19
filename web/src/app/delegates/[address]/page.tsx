@@ -6,14 +6,13 @@ import { delegateNames } from 'shared'
 import { Address } from 'viem'
 import { getPublicClient } from 'wagmi/actions'
 
-import { CopyAddressButton, CopyButton } from '@/components/CopyButton'
+import { CopyAddressButton } from '@/components/CopyButton'
 import { DelegateButton } from '@/components/DelegateButton'
 import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
 import { ProposalStatus } from '@/components/ProposalStatus'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -84,7 +83,7 @@ export default async function Delegate({ params }: DelegatePageProps) {
 
       <div className="mb-8">
         <div className="flex flex-col justify-between gap-3 md:flex-row md:gap-12 items-center">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+          <div className="flex flex-col gap-4 md:flex-row items-center">
             <img
               src={
                 isEnsName
