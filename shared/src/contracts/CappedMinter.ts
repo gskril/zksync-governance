@@ -1,0 +1,451 @@
+export const ZkCappedMinterV2Factory = {
+  address: '0x0400E6bc22B68686Fb197E91f66E199C6b0DDD6a',
+  startBlock: 53321793,
+  abi: [
+    {
+      inputs: [
+        { internalType: 'bytes32', name: '_bytecodeHash', type: 'bytes32' },
+      ],
+      stateMutability: 'nonpayable',
+      type: 'constructor',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'minterAddress',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'contract IMintable',
+          name: 'mintable',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'admin',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'cap',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint48',
+          name: 'startTime',
+          type: 'uint48',
+        },
+        {
+          indexed: false,
+          internalType: 'uint48',
+          name: 'expirationTime',
+          type: 'uint48',
+        },
+      ],
+      name: 'CappedMinterV2Created',
+      type: 'event',
+    },
+    {
+      inputs: [],
+      name: 'BYTECODE_HASH',
+      outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'contract IMintable',
+          name: '_mintable',
+          type: 'address',
+        },
+        { internalType: 'address', name: '_admin', type: 'address' },
+        { internalType: 'uint256', name: '_cap', type: 'uint256' },
+        { internalType: 'uint48', name: '_startTime', type: 'uint48' },
+        { internalType: 'uint48', name: '_expirationTime', type: 'uint48' },
+        { internalType: 'uint256', name: '_saltNonce', type: 'uint256' },
+      ],
+      name: 'createCappedMinter',
+      outputs: [
+        { internalType: 'address', name: 'minterAddress', type: 'address' },
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'contract IMintable',
+          name: '_mintable',
+          type: 'address',
+        },
+        { internalType: 'address', name: '_admin', type: 'address' },
+        { internalType: 'uint256', name: '_cap', type: 'uint256' },
+        { internalType: 'uint48', name: '_startTime', type: 'uint48' },
+        { internalType: 'uint48', name: '_expirationTime', type: 'uint48' },
+        { internalType: 'uint256', name: '_saltNonce', type: 'uint256' },
+      ],
+      name: 'getMinter',
+      outputs: [{ internalType: 'address', name: 'addr', type: 'address' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ],
+} as const
+
+export const ZkCappedMinterV2 = {
+  abi: [
+    {
+      inputs: [
+        {
+          internalType: 'contract IMintable',
+          name: '_mintable',
+          type: 'address',
+        },
+        { internalType: 'address', name: '_admin', type: 'address' },
+        { internalType: 'uint256', name: '_cap', type: 'uint256' },
+        { internalType: 'uint48', name: '_startTime', type: 'uint48' },
+        { internalType: 'uint48', name: '_expirationTime', type: 'uint48' },
+      ],
+      stateMutability: 'nonpayable',
+      type: 'constructor',
+    },
+    {
+      inputs: [],
+      name: 'ZkCappedMinterV2__CannotGrantDefaultAdmin',
+      type: 'error',
+    },
+    {
+      inputs: [
+        { internalType: 'address', name: 'minter', type: 'address' },
+        { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      ],
+      name: 'ZkCappedMinterV2__CapExceeded',
+      type: 'error',
+    },
+    { inputs: [], name: 'ZkCappedMinterV2__ContractClosed', type: 'error' },
+    { inputs: [], name: 'ZkCappedMinterV2__Expired', type: 'error' },
+    { inputs: [], name: 'ZkCappedMinterV2__InvalidTime', type: 'error' },
+    { inputs: [], name: 'ZkCappedMinterV2__NotStarted', type: 'error' },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: '_closer',
+          type: 'address',
+        },
+      ],
+      name: 'Closed',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        { indexed: false, internalType: 'string', name: 'uri', type: 'string' },
+      ],
+      name: 'MetadataURISet',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'minter',
+          type: 'address',
+        },
+        { indexed: true, internalType: 'address', name: 'to', type: 'address' },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'Minted',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'Paused',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'previousAdminRole',
+          type: 'bytes32',
+        },
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'newAdminRole',
+          type: 'bytes32',
+        },
+      ],
+      name: 'RoleAdminChanged',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'sender',
+          type: 'address',
+        },
+      ],
+      name: 'RoleGranted',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'sender',
+          type: 'address',
+        },
+      ],
+      name: 'RoleRevoked',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'Unpaused',
+      type: 'event',
+    },
+    {
+      inputs: [],
+      name: 'CAP',
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'DEFAULT_ADMIN_ROLE',
+      outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'EXPIRATION_TIME',
+      outputs: [{ internalType: 'uint48', name: '', type: 'uint48' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'MINTABLE',
+      outputs: [
+        { internalType: 'contract IMintable', name: '', type: 'address' },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'MINTER_ROLE',
+      outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'PAUSER_ROLE',
+      outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'START_TIME',
+      outputs: [{ internalType: 'uint48', name: '', type: 'uint48' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'close',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'closed',
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [{ internalType: 'bytes32', name: 'role', type: 'bytes32' }],
+      name: 'getRoleAdmin',
+      outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+        { internalType: 'address', name: 'account', type: 'address' },
+      ],
+      name: 'grantRole',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+        { internalType: 'address', name: 'account', type: 'address' },
+      ],
+      name: 'hasRole',
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'metadataURI',
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'address', name: '_to', type: 'address' },
+        { internalType: 'uint256', name: '_amount', type: 'uint256' },
+      ],
+      name: 'mint',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'minted',
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'pause',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'paused',
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+        { internalType: 'address', name: 'account', type: 'address' },
+      ],
+      name: 'renounceRole',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+        { internalType: 'address', name: 'account', type: 'address' },
+      ],
+      name: 'revokeRole',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [{ internalType: 'string', name: '_uri', type: 'string' }],
+      name: 'setMetadataURI',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
+      name: 'supportsInterface',
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'unpause',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ],
+} as const

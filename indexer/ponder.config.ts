@@ -1,6 +1,8 @@
 import { loadBalance } from '@ponder/utils'
-import { createConfig } from 'ponder'
+import { createConfig, factory } from 'ponder'
 import {
+  ZkCappedMinterV2,
+  ZkCappedMinterV2Factory,
   ZkGovOpsGovernor,
   ZkProtocolGovernor,
   ZkToken,
@@ -39,6 +41,22 @@ export default createConfig({
       chain: 'zkSync',
       startBlock: isDev ? 55000000 : ZkToken.startBlock,
       endBlock: isDev ? 60410162 : undefined,
+    },
+    CappedMinterFactory: {
+      address: ZkCappedMinterV2Factory.address,
+      abi: ZkCappedMinterV2Factory.abi,
+      chain: 'zkSync',
+      startBlock: ZkCappedMinterV2Factory.startBlock,
+    },
+    CappedMinter: {
+      abi: ZkCappedMinterV2.abi,
+      chain: 'zkSync',
+      startBlock: ZkCappedMinterV2Factory.startBlock,
+      address: factory({
+        address: ZkCappedMinterV2Factory.address,
+        event: ZkCappedMinterV2Factory.abi[1],
+        parameter: 'minterAddress',
+      }) as any,
     },
   },
 })

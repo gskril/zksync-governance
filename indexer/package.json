@@ -15,7 +15,7 @@
     "@ponder/utils": "^0.2.16",
     "hono": "^4.10.7",
     "marked": "^17.0.1",
-    "ponder": "^0.15.13",
+    "ponder": "^0.15.17",
     "shared": "workspace:*",
     "viem": "^2.41.2"
   },

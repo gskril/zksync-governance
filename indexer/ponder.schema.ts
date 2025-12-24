@@ -148,3 +148,23 @@ export const delegateVotesChangedEvent = onchainTable(
     newBalance: t.bigint().notNull(),
   })
 )
+
+export const cappedMinterCreatedEvent = onchainTable(
+  'cappedMinterCreatedEvent',
+  (t) => ({
+    id: t.text().primaryKey(),
+    timestamp: t.bigint().notNull(),
+    minter: t.hex().notNull(),
+  })
+)
+
+export const cappedMinter = onchainTable('cappedMinter', (t) => ({
+  address: t.hex().primaryKey(),
+  createdAt: t.bigint().notNull(),
+  mintable: t.hex().notNull(),
+  admin: t.hex().notNull(),
+  cap: t.bigint().notNull(),
+  minted: t.bigint().notNull(),
+  startTime: t.integer().notNull(),
+  expirationTime: t.integer().notNull(),
+}))
