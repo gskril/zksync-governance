@@ -1,6 +1,11 @@
+import type {
+  account,
+  cappedMinter,
+  proposal,
+  voteCastEvent,
+} from 'ponder:schema'
 import type { Hex } from 'viem'
 
-import { account, proposal, voteCastEvent } from '../ponder.schema'
 import type { getDelegate, getDelegates } from './api/handlers'
 
 export type Status =
@@ -44,3 +49,5 @@ export type GetDelegatesResponse = ReplaceBigInts<
 export type GetDelegateResponse = ReplaceBigInts<
   Awaited<ReturnType<typeof getDelegate>>
 >
+
+export type Minter = ReplaceBigInts<typeof cappedMinter.$inferSelect>

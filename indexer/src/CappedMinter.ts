@@ -21,7 +21,7 @@ ponder.on(
 
 ponder.on('CappedMinter:Minted', async ({ event, context }) => {
   await context.db
-    .update(cappedMinter, { address: event.args.minter })
+    .update(cappedMinter, { address: event.log.address })
     .set((cols) => ({
       minted: cols.minted + event.args.amount,
     }))
