@@ -160,7 +160,7 @@ export const cappedMinterCreatedEvent = onchainTable(
 
 export const cappedMinter = onchainTable('cappedMinter', (t) => ({
   address: t.hex().primaryKey(),
-  createdAt: t.bigint().notNull(),
+  createdAt: t.integer().notNull(),
   mintable: t.hex().notNull(),
   admin: t.hex().notNull(),
   cap: t.bigint().notNull(),

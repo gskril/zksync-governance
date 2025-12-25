@@ -13,7 +13,7 @@ ponder.on(
     await context.db.insert(cappedMinter).values({
       ...event.args,
       address: event.args.minterAddress,
-      createdAt: event.block.timestamp,
+      createdAt: Number(event.block.timestamp),
       minted: BigInt(0),
     })
   }
