@@ -167,4 +167,5 @@ export const cappedMinter = onchainTable('cappedMinter', (t) => ({
   minted: t.bigint().notNull(),
   startTime: t.integer().notNull(),
   expirationTime: t.integer().notNull(),
+  minter: t.hex().notNull(),
 }))
