@@ -58,7 +58,7 @@ export function MintersTable({ minters }: { minters: Minter[] }) {
                 {/* Minter */}
                 <TableCell>
                   <a
-                    href={`https://explorer.zksync.io/address/${minter.admin}`}
+                    href={`https://explorer.zksync.io/address/${minter.minter}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

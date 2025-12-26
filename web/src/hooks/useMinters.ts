@@ -16,6 +16,7 @@ const query = `
         cap
         createdAt
         expirationTime
+        minter
         mintable
         minted
         startTime

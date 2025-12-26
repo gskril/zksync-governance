@@ -13,7 +13,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatTimestamp(
-  timestamp: string,
+  timestamp: string | number,
   options: { includeTime?: boolean; includeYear?: boolean } = {
     includeTime: false,
     includeYear: true,
