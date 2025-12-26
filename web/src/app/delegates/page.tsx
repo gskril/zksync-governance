@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
 import { Suspense } from 'react'
 
 import { Footer } from '@/components/Footer'
@@ -83,7 +84,7 @@ export default async function Delegates({ searchParams }: Props) {
       <div className="mb-8">
         <div className="flex flex-col justify-between gap-3 md:flex-row md:gap-12">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
-            <img
+            <Image
               src="/img/logo-filled-dark.svg"
               alt="ZKsync Logo"
               width={160}

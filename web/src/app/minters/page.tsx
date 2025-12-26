@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
 
 import { Footer } from '@/components/Footer'
 import { MintersTable } from '@/components/MintersTable'
@@ -26,7 +27,7 @@ export default async function MintersPage() {
       <div className="mb-8">
         <div className="flex flex-col justify-between gap-3 md:flex-row md:gap-12">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
-            <img
+            <Image
               src="/img/logo-filled-dark.svg"
               alt="ZKsync Logo"
               width={160}
