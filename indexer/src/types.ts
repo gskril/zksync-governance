@@ -1,11 +1,11 @@
-import type {
+import type { Hex } from 'viem'
+
+import {
   account,
   cappedMinter,
   proposal,
   voteCastEvent,
-} from 'ponder:schema'
-import type { Hex } from 'viem'
-
+} from '../ponder.schema'
 import type { getDelegate, getDelegates } from './api/handlers'
 
 export type Status =
