@@ -8,6 +8,9 @@ const query = `
       limit: 100
       orderBy: "createdAt"
       orderDirection: "desc"
+      where:{
+        minter_not: "0x0000000000000000000000000000000000000000"
+      }
     ) {
       totalCount
       items {
