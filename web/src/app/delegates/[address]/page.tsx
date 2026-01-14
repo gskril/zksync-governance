@@ -1,5 +1,6 @@
 import { getPropStatus } from 'indexer/utils'
 import { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { delegateNames } from 'shared'
@@ -84,7 +85,7 @@ export default async function Delegate({ params }: DelegatePageProps) {
       <div className="mb-8">
         <div className="flex flex-col justify-between gap-3 md:flex-row md:gap-12 items-center">
           <div className="flex flex-col gap-4 md:flex-row items-center">
-            <img
+            <Image
               src={
                 isEnsName
                   ? `https://ens-api.gregskril.com/avatar/${name}?width=320&fallback=${env.BASE_URL}/img/fallback-avatar.svg`
