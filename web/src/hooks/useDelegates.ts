@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { GetDelegatesResponse } from 'indexer/types'
 
 import { env } from '@/lib/env'
@@ -7,6 +8,15 @@ export const DELEGATES_PER_PAGE = 50
 type GetDelegatesParams = {
   page: number
   q?: string
+}
+
+export function useDelegates({ page, q }: GetDelegatesParams) {
+  return useQuery({
+    queryKey: ['delegates', page, q],
+    queryFn: async () => {
+      return await getDelegates({ page, q })
+    },
+  })
 }
 
 export async function getDelegates({ page, q }: GetDelegatesParams) {
