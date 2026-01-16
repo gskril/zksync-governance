@@ -61,7 +61,6 @@ The app uses **client-side data fetching with React Query** instead of ISR/serve
 export function useProposals() {
   return useQuery({
     queryKey: ['proposals'],
-    refetchInterval: 5000,
     queryFn: async () => await getProposals(),
   })
 }
@@ -187,3 +186,20 @@ Pages are generated on-demand when first visited and cached indefinitely. New pr
 - Votes panel (vote bars, quorum, voter list)
 
 This keeps static content (title, description) cached forever while dynamic content (status, votes) loads fresh on each visit.
+
+### Delegate Page Architecture
+
+The `/delegates/[address]` page uses the same hybrid approach:
+
+**Server-rendered (cached forever with `revalidate = false`):**
+- Page shell (Nav, Footer)
+- Metadata (title, description) with ENS name lookup
+
+Pages are generated on-demand when first visited and cached indefinitely.
+
+**Client-side (loaded via React Query):**
+- Delegate header (ENS name, avatar)
+- Voting power card with delegate button
+- Voting history table
+
+This keeps the page shell cached while dynamic delegate data loads fresh on each visit.
