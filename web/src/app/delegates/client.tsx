@@ -157,7 +157,7 @@ export function DelegatesClient() {
             }}
           />
           <InputGroupAddon>
-            <SearchIcon />
+            <SearchIcon aria-hidden="true" />
           </InputGroupAddon>
         </InputGroup>
       </div>
@@ -203,18 +203,31 @@ export function DelegatesClient() {
 
                   <TableCell className="hidden text-right lg:table-cell">
                     <div className="flex items-center justify-end gap-1">
-                      {delegate.voteCasts.map((vote) => (
-                        <div
-                          key={vote.proposalId}
-                          className={cn(
-                            'size-6 rounded-full',
-                            vote.support === -1 && 'bg-zinc-200',
-                            vote.support === 0 && 'bg-brand-red',
-                            vote.support === 1 && 'bg-brand-green',
-                            vote.support === 2 && 'bg-zinc-500'
-                          )}
-                        />
-                      ))}
+                      {delegate.voteCasts.map((vote) => {
+                        const voteLabel =
+                          vote.support === -1
+                            ? 'Did not vote'
+                            : vote.support === 0
+                              ? 'Voted against'
+                              : vote.support === 1
+                                ? 'Voted for'
+                                : 'Abstained'
+                        return (
+                          <div
+                            key={vote.proposalId}
+                            role="img"
+                            aria-label={voteLabel}
+                            title={voteLabel}
+                            className={cn(
+                              'size-6 rounded-full',
+                              vote.support === -1 && 'bg-zinc-200',
+                              vote.support === 0 && 'bg-brand-red',
+                              vote.support === 1 && 'bg-brand-green',
+                              vote.support === 2 && 'bg-zinc-500'
+                            )}
+                          />
+                        )
+                      })}
                     </div>
                   </TableCell>
                 </TableRow>

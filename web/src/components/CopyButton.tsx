@@ -28,7 +28,7 @@ export function CopyButton({ text }: Props) {
       variant="secondary"
       onClick={handleCopy}
     >
-      {isCopied ? <Check /> : <Copy />}
+      {isCopied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
       {isCopied ? 'Copied' : 'Copy Page'}
     </Button>
   )
@@ -55,9 +55,9 @@ export function CopyAddressButton({ address }: { address: string }) {
       <span>{truncateAddress(address)}</span>
       <div className="size-3.5">
         {isCopied ? (
-          <Check className="max-w-full max-h-full" />
+          <Check className="max-w-full max-h-full" aria-hidden="true" />
         ) : (
-          <Copy className="max-w-full max-h-full" />
+          <Copy className="max-w-full max-h-full" aria-hidden="true" />
         )}
       </div>
     </Button>

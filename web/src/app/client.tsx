@@ -212,8 +212,9 @@ export function ProposalsClient() {
                       <Link
                         href={`/proposal/${proposal.id}`}
                         className="w-full flex items-center justify-center"
+                        aria-label="View proposal"
                       >
-                        <ChevronRight className="size-4" />
+                        <ChevronRight className="size-4" aria-hidden="true" />
                       </Link>
                     )}
                   </TableCell>

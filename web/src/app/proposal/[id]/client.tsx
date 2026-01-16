@@ -162,7 +162,7 @@ export function MobileVotesCard({ proposalId }: { proposalId: string }) {
           className: 'w-full lg:hidden',
         })}
       >
-        <ArrowDown />
+        <ArrowDown aria-hidden="true" />
         Skip to Votes
       </a>
     </>

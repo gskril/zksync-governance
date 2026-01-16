@@ -38,6 +38,8 @@ export function ConnectButton() {
                 ? `https://ens-api.gregskril.com/avatar/${ensName}?width=64&fallback=${env.BASE_URL}/img/fallback-avatar.svg`
                 : '/img/fallback-avatar.svg'
             }
+            width={32}
+            height={32}
             alt={nameWithFallback(ensName, address)}
             className="size-8 rounded-full object-cover"
           />
@@ -60,7 +62,7 @@ export function ConnectButton() {
       variant="primary"
       onClick={() => openConnectModal?.()}
     >
-      <Wallet className="hidden sm:block" />
+      <Wallet className="hidden sm:block" aria-hidden="true" />
       Connect
     </Button>
   )
