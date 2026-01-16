@@ -255,7 +255,7 @@ export function DelegatesClient() {
         </Table>
       </div>
 
-      {totalPages > 1 && !q && (
+      {totalPages > 1 && !debouncedSearchQuery && (
         <Pagination className="mt-6">
           <PaginationContent>
             <PaginationItem>
