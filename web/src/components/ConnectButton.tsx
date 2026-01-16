@@ -2,7 +2,6 @@
 
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Wallet } from 'lucide-react'
-import Image from 'next/image'
 import { useAccount, useDisconnect, useEnsName } from 'wagmi'
 
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -33,15 +32,13 @@ export function ConnectButton() {
             'border h-fit gap-1.5 rounded-full bg-white pb-1 px-1 sm:pr-4 pt-1 text-foreground hover:bg-white/90'
           )}
         >
-          <Image
+          <img
             src={
               ensName
                 ? `https://ens-api.gregskril.com/avatar/${ensName}?width=64&fallback=${env.BASE_URL}/img/fallback-avatar.svg`
                 : '/img/fallback-avatar.svg'
             }
             alt={nameWithFallback(ensName, address)}
-            width={32}
-            height={32}
             className="size-8 rounded-full object-cover"
           />
           <span className="hidden sm:block">

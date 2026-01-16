@@ -1,7 +1,6 @@
 'use client'
 
 import { EnhancedProposalWithVotes } from 'indexer/types'
-import Image from 'next/image'
 import Link from 'next/link'
 import { delegateNames } from 'shared'
 import { Address } from 'viem'
@@ -40,7 +39,7 @@ export function ProposalVote({ vote, voter, weight }: Props) {
     <div key={voter} className="space-y-1.5 text-sm font-medium">
       <div className="flex w-full justify-between gap-4">
         <div className="flex items-center gap-1">
-          <Image
+          <img
             src={
               ensName
                 ? `https://ens-api.gregskril.com/avatar/${ensName}?width=48&fallback=${env.BASE_URL}/img/fallback-avatar.svg`
@@ -48,8 +47,6 @@ export function ProposalVote({ vote, voter, weight }: Props) {
             }
             loading="lazy"
             alt={nameWithFallback(ensName, voter)}
-            width={24}
-            height={24}
             className="size-6 rounded-full object-cover"
           />
           <Link href={`/delegates/${voter}`}>

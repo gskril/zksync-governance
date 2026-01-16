@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { delegateNames } from 'shared'
 import { Address } from 'viem'
 import { useEnsName } from 'wagmi'
@@ -32,15 +31,13 @@ export function DelegateName({ address, size = 'md' }: DelegateNameProps) {
         size === 'sm' && 'gap-1'
       )}
     >
-      <Image
+      <img
         src={
           ensName
             ? `https://ens-api.gregskril.com/avatar/${ensName}?width=64&fallback=${env.BASE_URL}/img/fallback-avatar.svg`
             : '/img/fallback-avatar.svg'
         }
         alt={nameWithFallback(nickname || ensName, address)}
-        width={32}
-        height={32}
         className={cn(
           'rounded-full object-cover',
           size === 'md' && 'size-8',
