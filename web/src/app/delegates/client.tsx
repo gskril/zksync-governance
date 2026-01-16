@@ -30,6 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Typography } from '@/components/ui/typography'
 import { DELEGATES_PER_PAGE, useDelegates } from '@/hooks/useDelegates'
 import { bigintToFormattedString, cn } from '@/lib/utils'
 
@@ -90,24 +91,28 @@ export function DelegatesClient() {
   const searchParams = useSearchParams()
 
   const _page = searchParams.get('page')
-  const q = searchParams.get('q') ?? undefined
+  const urlSearchQuery = searchParams.get('q') ?? undefined
   const currentPage = Math.max(1, parseInt(_page ?? '1', 10) || 1)
 
-  const { data: delegates, isLoading } = useDelegates({ page: currentPage, q })
-
-  const [searchQuery, setSearchQuery] = useState(q ?? '')
+  const [searchQuery, setSearchQuery] = useState(urlSearchQuery ?? '')
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500)
 
-  const totalPages = q ? 1 : 100
+  const { data: delegates, isLoading, error, isError } = useDelegates({
+    page: currentPage,
+    q: debouncedSearchQuery || undefined,
+  })
+
+  const totalPages = debouncedSearchQuery ? 1 : 100
   const rankOffset = (currentPage - 1) * DELEGATES_PER_PAGE
 
   useEffect(() => {
+    // Only update URL when debounced value changes
     if (debouncedSearchQuery === '') {
       router.push('/delegates', { scroll: false })
       return
     }
 
-    router.push(`/delegates?q=${debouncedSearchQuery}`)
+    router.push(`/delegates?q=${debouncedSearchQuery}`, { scroll: false })
   }, [debouncedSearchQuery, router])
 
   // Generate page numbers to display
@@ -179,6 +184,19 @@ export function DelegatesClient() {
               Array.from({ length: 10 }).map((_, i) => (
                 <DelegateRowSkeleton key={i} />
               ))
+            ) : isError ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-8">
+                  <div className="flex flex-col items-center gap-2">
+                    <Typography className="text-red-600 font-semibold">
+                      Failed to load delegates
+                    </Typography>
+                    <Typography className="text-sm text-zinc-500">
+                      {error instanceof Error ? error.message : 'An error occurred'}
+                    </Typography>
+                  </div>
+                </TableCell>
+              </TableRow>
             ) : delegates?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="text-center">

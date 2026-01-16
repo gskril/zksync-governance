@@ -85,7 +85,7 @@ export function ProposalsTableSkeleton() {
 }
 
 export function ProposalsClient() {
-  const { data: allProposals, isLoading } = useProposals()
+  const { data: allProposals, isLoading, error, isError } = useProposals()
   const searchParams = useSearchParams()
   const _governor = searchParams.get('governor') ?? ''
   const governor = isAddress(_governor) ? _governor : undefined
@@ -146,6 +146,19 @@ export function ProposalsClient() {
                 <ProposalRowSkeleton />
                 <ProposalRowSkeleton />
               </>
+            ) : isError ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-8">
+                  <div className="flex flex-col items-center gap-2">
+                    <Typography className="text-red-600 font-semibold">
+                      Failed to load proposals
+                    </Typography>
+                    <Typography className="text-sm text-zinc-500">
+                      {error instanceof Error ? error.message : 'An error occurred'}
+                    </Typography>
+                  </div>
+                </TableCell>
+              </TableRow>
             ) : (
               proposals.map((proposal) => (
                 <TableRow key={proposal.id} className="group">

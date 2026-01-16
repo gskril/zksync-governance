@@ -92,13 +92,26 @@ function VotingCardSkeleton() {
 }
 
 export function ProposalStatusClient({ proposalId }: { proposalId: string }) {
-  const { data: proposal, isLoading } = useProposal(proposalId)
+  const { data: proposal, isLoading, error, isError } = useProposal(proposalId)
 
   if (isLoading || !proposal) {
     return (
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <Skeleton className="h-6 w-20" />
         <Skeleton className="h-4 w-48" />
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col gap-1">
+        <Typography className="text-red-600 font-semibold">
+          Failed to load proposal status
+        </Typography>
+        <Typography className="text-sm text-zinc-500">
+          {error instanceof Error ? error.message : 'An error occurred'}
+        </Typography>
       </div>
     )
   }
@@ -170,7 +183,7 @@ export function MobileVotesCard({ proposalId }: { proposalId: string }) {
 }
 
 export function VotesPanel({ proposalId }: { proposalId: string }) {
-  const { data: proposal, isLoading } = useProposal(proposalId)
+  const { data: proposal, isLoading, error, isError } = useProposal(proposalId)
 
   if (isLoading || !proposal) {
     return (
@@ -193,6 +206,26 @@ export function VotesPanel({ proposalId }: { proposalId: string }) {
               <Skeleton className="h-4 w-16" />
             </div>
           ))}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (isError) {
+    return (
+      <Card
+        className="sticky top-6 rounded-xl shadow-custom-card"
+        id="votes"
+      >
+        <CardContent className="py-8">
+          <div className="flex flex-col items-center gap-2">
+            <Typography className="text-red-600 font-semibold">
+              Failed to load votes
+            </Typography>
+            <Typography className="text-sm text-zinc-500">
+              {error instanceof Error ? error.message : 'An error occurred'}
+            </Typography>
+          </div>
         </CardContent>
       </Card>
     )

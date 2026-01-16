@@ -10,6 +10,10 @@ export function useDelegate(address: Address) {
     queryFn: async () => {
       return await getDelegate(address)
     },
+    staleTime: 1000 * 30, // 30 seconds - delegate data changes infrequently
+    gcTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
+    retry: 2,
   })
 }
 

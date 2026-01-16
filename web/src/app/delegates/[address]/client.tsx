@@ -90,7 +90,7 @@ export function DelegateHeader({ address }: { address: Address }) {
 }
 
 export function VotingPowerCard({ address }: { address: Address }) {
-  const { data: delegate, isLoading } = useDelegate(address)
+  const { data: delegate, isLoading, error, isError } = useDelegate(address)
 
   if (isLoading || !delegate) {
     return (
@@ -100,6 +100,19 @@ export function VotingPowerCard({ address }: { address: Address }) {
           <Skeleton className="h-6 w-24" />
         </div>
         <Skeleton className="h-10 w-24 rounded-full" />
+      </Card>
+    )
+  }
+
+  if (isError) {
+    return (
+      <Card className="h-fit flex flex-col gap-2 p-4 w-full md:w-fit">
+        <Typography className="text-red-600 font-semibold">
+          Failed to load delegate data
+        </Typography>
+        <Typography className="text-sm text-zinc-500">
+          {error instanceof Error ? error.message : 'An error occurred'}
+        </Typography>
       </Card>
     )
   }
@@ -139,7 +152,7 @@ function VotingHistoryRowSkeleton() {
 }
 
 export function VotingHistoryTable({ address }: { address: Address }) {
-  const { data: delegate, isLoading } = useDelegate(address)
+  const { data: delegate, isLoading, error, isError } = useDelegate(address)
 
   return (
     <div className="shadow-custom-card rounded-xl border overflow-hidden">
@@ -160,6 +173,19 @@ export function VotingHistoryTable({ address }: { address: Address }) {
               <VotingHistoryRowSkeleton />
               <VotingHistoryRowSkeleton />
             </>
+          ) : isError ? (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center py-8">
+                <div className="flex flex-col items-center gap-2">
+                  <Typography className="text-red-600 font-semibold">
+                    Failed to load voting history
+                  </Typography>
+                  <Typography className="text-sm text-zinc-500">
+                    {error instanceof Error ? error.message : 'An error occurred'}
+                  </Typography>
+                </div>
+              </TableCell>
+            </TableRow>
           ) : !delegate || delegate.voteCasts.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4} className="text-center">

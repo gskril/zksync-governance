@@ -16,6 +16,10 @@ export function useDelegates({ page, q }: GetDelegatesParams) {
     queryFn: async () => {
       return await getDelegates({ page, q })
     },
+    staleTime: 1000 * 60, // 1 minute - delegate list relatively static
+    gcTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
+    retry: 2,
   })
 }
 
