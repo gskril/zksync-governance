@@ -167,5 +167,23 @@ Data comes from the indexer at `PONDER_URL`:
 ## Notes
 
 - The app was refactored from ISR to client-side fetching to reduce Vercel usage costs
-- Proposal pages still use `revalidate = 60` for SEO/metadata
 - Use Suspense with skeleton fallbacks to prevent layout flash on page load
+
+### Proposal Page Architecture
+
+The `/proposal/[id]` page uses a hybrid approach:
+
+**Server-rendered (cached forever with `revalidate = false`):**
+- Title
+- Proposer info
+- Description/body (markdown content)
+- Executable code tab
+
+Pages are generated on-demand when first visited and cached indefinitely. New proposals automatically get pages created when accessed.
+
+**Client-side (loaded via React Query):**
+- Status badge and end timestamp
+- Vote/Queue/Execute action buttons
+- Votes panel (vote bars, quorum, voter list)
+
+This keeps static content (title, description) cached forever while dynamic content (status, votes) loads fresh on each visit.
