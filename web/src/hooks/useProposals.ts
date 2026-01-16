@@ -7,7 +7,6 @@ import { env } from '@/lib/env'
 export function useProposals() {
   return useQuery({
     queryKey: ['proposals'],
-    refetchInterval: 5000,
     queryFn: async () => {
       return await getProposals()
     },
