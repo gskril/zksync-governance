@@ -16,11 +16,12 @@ export default createConfig({
   chains: {
     zkSync: {
       id: 324,
-      rpc: loadBalance([http('https://mainnet.era.zksync.io')]),
+      rpc: process.env.ZKSYNC_RPC_URL,
+      ws: process.env.ZKSYNC_WS_URL,
     },
     mainnet: {
       id: 1,
-      rpc: http('https://ethereum-rpc.publicnode.com'),
+      rpc: http(process.env.ETH_RPC_URL),
     },
   },
   contracts: {
