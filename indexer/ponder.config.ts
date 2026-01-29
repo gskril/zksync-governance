@@ -1,4 +1,3 @@
-import { loadBalance } from '@ponder/utils'
 import { createConfig, factory } from 'ponder'
 import {
   ZkCappedMinterV2,
@@ -8,7 +7,7 @@ import {
   ZkToken,
   ZkTokenGovernor,
 } from 'shared/contracts'
-import { http } from 'viem'
+import { fallback, http } from 'viem'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -16,7 +15,14 @@ export default createConfig({
   chains: {
     zkSync: {
       id: 324,
-      rpc: process.env.ZKSYNC_RPC_URL,
+      rpc: fallback(
+        [
+          http(process.env.ZKSYNC_RPC_URL),
+          http(process.env.ZKSYNC_RPC_URL_FALLBACK),
+          http('https://mainnet.era.zksync.io'),
+        ],
+        { rank: true }
+      ),
       ws: process.env.ZKSYNC_WS_URL,
     },
     mainnet: {
