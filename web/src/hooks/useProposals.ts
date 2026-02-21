@@ -28,8 +28,14 @@ export async function getProposals({ governor }: ProposalsArgs = {}) {
     new URL(path, env.PONDER_URL).toString() + '?' + queryParams.toString()
 
   const response = await fetch(url)
-  const json = await response.json()
-  const data = json as EnhancedProposal[]
 
-  return data
+  try {
+    const json = await response.json()
+    const data = json as EnhancedProposal[]
+
+    return data
+  } catch (error) {
+    console.error('Failed to fetch proposals', error)
+    return []
+  }
 }
