@@ -19,14 +19,16 @@ export async function getDelegates({ page, q }: GetDelegatesParams) {
     query.set('q', q)
   }
 
-  const response = await fetch(
-    `${env.PONDER_URL}/delegates?${query.toString()}`
-  )
-  if (!response.ok) {
-    throw new Error('Failed to fetch delegates')
-  }
-  const json = await response.json()
-  const data = json as GetDelegatesResponse
+  try {
+    const response = await fetch(
+      `${env.PONDER_URL}/delegates?${query.toString()}`
+    )
+    const json = await response.json()
+    const data = json as GetDelegatesResponse
 
-  return data
+    return data
+  } catch (error) {
+    console.error('Failed to fetch delegates', error)
+    return []
+  }
 }
