@@ -48,11 +48,11 @@
 }
 
 :root {
-  --brand-primary: oklch(52% 0.268 263deg);
+  --brand-primary: oklch(43.9% 0.2868 265.1deg);
   --brand-green: oklch(67.4% 0.126 176deg);
   --brand-orange: oklch(62.3% 0.143 61.3deg);
   --brand-red: oklch(56.3% 0.195 14.9deg);
-  --brand-freedom-blue: oklch(92% 0.0387 258deg);
+  --brand-freedom-blue: oklch(89.8% 0.0421 273.7deg);
 
   --radius: 0.625rem;
   --background: oklch(1 0 0);
