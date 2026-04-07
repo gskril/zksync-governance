@@ -7,10 +7,13 @@ import { env } from '@/lib/env'
 export function useProposals() {
   return useQuery({
     queryKey: ['proposals'],
-    refetchInterval: 5000,
     queryFn: async () => {
       return await getProposals()
     },
+    staleTime: 1000 * 30, // 30 seconds - proposals data is relatively static
+    gcTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
+    retry: 2,
   })
 }
 

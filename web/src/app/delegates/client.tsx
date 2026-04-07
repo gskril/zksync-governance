@@ -1,6 +1,5 @@
 'use client'
 
-import { GetDelegatesResponse } from 'indexer/types'
 import { SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -14,6 +13,16 @@ import {
   InputGroupInput,
 } from '@/components/ui/input-group'
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
+import { Skeleton } from '@/components/ui/skeleton'
+import {
   Table,
   TableBody,
   TableCell,
@@ -21,27 +30,125 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Typography } from '@/components/ui/typography'
+import { DELEGATES_PER_PAGE, useDelegates } from '@/hooks/useDelegates'
 import { bigintToFormattedString, cn } from '@/lib/utils'
 
-export function DelegatesClient({
-  delegates,
-  rankOffset,
-}: {
-  delegates: GetDelegatesResponse
-  rankOffset: number
-}) {
+function DelegateRowSkeleton() {
+  return (
+    <TableRow>
+      <TableCell className="hidden md:table-cell">
+        <Skeleton className="h-5 w-8" />
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-8 rounded-full" />
+          <Skeleton className="h-5 w-32" />
+        </div>
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-5 w-20" />
+      </TableCell>
+      <TableCell className="hidden lg:table-cell">
+        <div className="flex items-center justify-end gap-1">
+          <Skeleton className="h-6 w-6 rounded-full" />
+          <Skeleton className="h-6 w-6 rounded-full" />
+          <Skeleton className="h-6 w-6 rounded-full" />
+          <Skeleton className="h-6 w-6 rounded-full" />
+          <Skeleton className="h-6 w-6 rounded-full" />
+        </div>
+      </TableCell>
+    </TableRow>
+  )
+}
+
+export function DelegatesTableSkeleton() {
+  return (
+    <div className="shadow-custom-card rounded-xl border overflow-hidden">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-14 hidden md:table-cell">Rank</TableHead>
+            <TableHead>Delegate</TableHead>
+            <TableHead className="w-36">Voting Power</TableHead>
+            <TableHead className="hidden w-52 text-right lg:table-cell">
+              Vote History
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 10 }).map((_, i) => (
+            <DelegateRowSkeleton key={i} />
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
+
+export function DelegatesClient() {
   const router = useRouter()
-  const [searchQuery, setSearchQuery] = useState('')
+  const searchParams = useSearchParams()
+
+  const _page = searchParams.get('page')
+  const urlSearchQuery = searchParams.get('q') ?? undefined
+  const currentPage = Math.max(1, parseInt(_page ?? '1', 10) || 1)
+
+  const [searchQuery, setSearchQuery] = useState(urlSearchQuery ?? '')
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500)
 
+  const { data: delegates, isLoading, error, isError } = useDelegates({
+    page: currentPage,
+    q: debouncedSearchQuery || undefined,
+  })
+
+  const totalPages = debouncedSearchQuery ? 1 : 100
+  const rankOffset = (currentPage - 1) * DELEGATES_PER_PAGE
+
   useEffect(() => {
+    // Only update URL when debounced value changes
     if (debouncedSearchQuery === '') {
       router.push('/delegates', { scroll: false })
       return
     }
 
-    router.push(`/delegates?q=${debouncedSearchQuery}`)
+    router.push(`/delegates?q=${debouncedSearchQuery}`, { scroll: false })
   }, [debouncedSearchQuery, router])
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages: (number | 'ellipsis')[] = []
+    const maxVisible = 5
+
+    if (totalPages <= maxVisible + 2) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      pages.push(1)
+
+      if (currentPage > 3) {
+        pages.push('ellipsis')
+      }
+
+      const start = Math.max(2, currentPage - 1)
+      const end = Math.min(totalPages - 1, currentPage + 1)
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i)
+      }
+
+      if (currentPage < totalPages - 2) {
+        pages.push('ellipsis')
+      }
+
+      if (totalPages > 1) {
+        pages.push(totalPages)
+      }
+    }
+
+    return pages
+  }
 
   return (
     <>
@@ -49,12 +156,13 @@ export function DelegatesClient({
         <InputGroup className="w-72 max-w-full">
           <InputGroupInput
             placeholder="Search address or ENS name"
+            value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value ?? '')
             }}
           />
           <InputGroupAddon>
-            <SearchIcon />
+            <SearchIcon aria-hidden="true" />
           </InputGroupAddon>
         </InputGroup>
       </div>
@@ -72,16 +180,31 @@ export function DelegatesClient({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {delegates.length === 0 && (
+            {isLoading ? (
+              Array.from({ length: 10 }).map((_, i) => (
+                <DelegateRowSkeleton key={i} />
+              ))
+            ) : isError ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-8">
+                  <div className="flex flex-col items-center gap-2">
+                    <Typography className="text-red-600 font-semibold">
+                      Failed to load delegates
+                    </Typography>
+                    <Typography className="text-sm text-zinc-500">
+                      {error instanceof Error ? error.message : 'An error occurred'}
+                    </Typography>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : delegates?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="text-center">
                   No Delegates found
                 </TableCell>
               </TableRow>
-            )}
-
-            {delegates.length > 0 &&
-              delegates.map((delegate, index) => (
+            ) : (
+              delegates?.map((delegate, index) => (
                 <TableRow key={delegate.address} className="group">
                   <TableCell className="hidden md:table-cell text-muted-foreground">
                     {rankOffset + index + 1}
@@ -98,25 +221,90 @@ export function DelegatesClient({
 
                   <TableCell className="hidden text-right lg:table-cell">
                     <div className="flex items-center justify-end gap-1">
-                      {delegate.voteCasts.map((vote) => (
-                        <div
-                          key={vote.proposalId}
-                          className={cn(
-                            'size-6 rounded-full',
-                            vote.support === -1 && 'bg-zinc-200',
-                            vote.support === 0 && 'bg-brand-red',
-                            vote.support === 1 && 'bg-brand-green',
-                            vote.support === 2 && 'bg-zinc-500'
-                          )}
-                        />
-                      ))}
+                      {delegate.voteCasts.map((vote) => {
+                        const voteLabel =
+                          vote.support === -1
+                            ? 'Did not vote'
+                            : vote.support === 0
+                              ? 'Voted against'
+                              : vote.support === 1
+                                ? 'Voted for'
+                                : 'Abstained'
+                        return (
+                          <div
+                            key={vote.proposalId}
+                            role="img"
+                            aria-label={voteLabel}
+                            title={voteLabel}
+                            className={cn(
+                              'size-6 rounded-full',
+                              vote.support === -1 && 'bg-zinc-200',
+                              vote.support === 0 && 'bg-brand-red',
+                              vote.support === 1 && 'bg-brand-green',
+                              vote.support === 2 && 'bg-zinc-500'
+                            )}
+                          />
+                        )
+                      })}
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
+
+      {totalPages > 1 && !debouncedSearchQuery && (
+        <Pagination className="mt-6">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href={
+                  currentPage > 1 ? `/delegates?page=${currentPage - 1}` : '#'
+                }
+                aria-disabled={currentPage <= 1}
+                className={
+                  currentPage <= 1 ? 'pointer-events-none opacity-50' : ''
+                }
+              />
+            </PaginationItem>
+
+            {getPageNumbers().map((page, i) =>
+              page === 'ellipsis' ? (
+                <PaginationItem key={`ellipsis-${i}`}>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              ) : (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    href={`/delegates?page=${page}`}
+                    isActive={page === currentPage}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            )}
+
+            <PaginationItem>
+              <PaginationNext
+                href={
+                  currentPage < totalPages
+                    ? `/delegates?page=${currentPage + 1}`
+                    : '#'
+                }
+                aria-disabled={currentPage >= totalPages}
+                className={
+                  currentPage >= totalPages
+                    ? 'pointer-events-none opacity-50'
+                    : ''
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </>
   )
 }

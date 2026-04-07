@@ -9,6 +9,10 @@ export function useProposal(id: string) {
     queryFn: async () => {
       return await getProposal(id)
     },
+    staleTime: 1000 * 15, // 15 seconds - votes can change frequently for active proposals
+    gcTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: true, // Refetch on focus for real-time vote updates
+    retry: 2,
   })
 }
 

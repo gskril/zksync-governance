@@ -3,16 +3,10 @@ import { Suspense } from 'react'
 
 import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
-import { getProposals } from '@/hooks/useProposals'
 
 import { ProposalsClient } from './client'
 
-// Serve from cache but revalidate every 60 seconds (ISR)
-export const revalidate = 60
-
-export default async function Home() {
-  const proposals = await getProposals()
-
+export default function Home() {
   return (
     <div className="container relative">
       <Nav />
@@ -46,8 +40,8 @@ export default async function Home() {
         </div>
       </div>
 
-      <Suspense fallback={null}>
-        <ProposalsClient proposals={proposals} />
+      <Suspense>
+        <ProposalsClient />
       </Suspense>
 
       <Footer />

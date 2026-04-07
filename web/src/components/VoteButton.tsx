@@ -171,7 +171,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
 
           {votingPower === BigInt(0) && (
             <Alert variant="destructive">
-              <CircleAlert />
+              <CircleAlert aria-hidden="true" />
               <AlertTitle>Unable to vote</AlertTitle>
               <AlertDescription>
                 You currently have 0 voting power.
@@ -210,7 +210,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
                 target="_blank"
                 className="flex items-center gap-1 text-sm text-muted-foreground hover:underline"
               >
-                View on Etherscan
+                View on block explorer
               </a>
             )}
           </DialogFooter>

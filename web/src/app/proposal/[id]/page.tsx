@@ -1,5 +1,3 @@
-import { EnhancedProposalWithVotes } from 'indexer/types'
-import { ArrowDown } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -7,13 +5,8 @@ import remarkGfm from 'remark-gfm'
 import { CopyButton } from '@/components/CopyButton'
 import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
-import { ProposalActionButton } from '@/components/ProposalActionButton'
-import { ProposalStatus } from '@/components/ProposalStatus'
-import { ProposalVote } from '@/components/ProposalVote'
-import { VoteBar } from '@/components/VoteBar'
-import { VoteButton } from '@/components/VoteButton'
 import { buttonVariants } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -27,15 +20,18 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Typography } from '@/components/ui/typography'
 import { getProposal } from '@/hooks/useProposal'
-import {
-  bigintToFormattedString,
-  formatTimestamp,
-  getQuorumProgress,
-  nameWithFallback,
-  parseVotes,
-} from '@/lib/utils'
+import { formatTimestamp, nameWithFallback } from '@/lib/utils'
 
-export const revalidate = 60
+import {
+  MobileVotesCard,
+  ProposalActionsClient,
+  ProposalStatusClient,
+  VotesPanel,
+} from './client'
+
+// Cache forever once generated, generate new pages on-demand
+export const revalidate = false
+export const dynamicParams = true
 
 export async function generateMetadata({
   params,
@@ -73,16 +69,7 @@ export default async function Proposal({
 
       <div className="grid items-center gap-6 pb-4 lg:grid-cols-[2fr_1fr]">
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <ProposalStatus proposal={proposal} />
-            <Typography className="text-sm text-zinc-500">
-              {/* Show "ends" or "ended" depending on the time */}
-              {Number(proposal.endTimestamp) > Date.now() / 1000
-                ? 'Ends'
-                : 'Ended'}{' '}
-              {formatTimestamp(proposal.endTimestamp, { includeTime: true })}
-            </Typography>
-          </div>
+          <ProposalStatusClient proposalId={id} />
 
           <Typography as="h1">{proposal.title}</Typography>
 
@@ -91,14 +78,6 @@ export default async function Proposal({
               <span className="hidden sm:block">Proposed by</span>
               <span className="block sm:hidden">By</span>
               <div className="mx-1.5 flex items-center gap-1">
-                {/* {proposerEnsName && (
-                  <img
-                    loading="lazy"
-                    src={`https://ens-api.gregskril.com/avatar/${proposerEnsName}?width=48`}
-                    alt={proposerEnsName}
-                    className="size-6 rounded-full object-cover"
-                  />
-                )} */}
                 <a
                   href={`https://explorer.zksync.io/address/${proposal.proposer}`}
                   target="_blank"
@@ -115,46 +94,10 @@ export default async function Proposal({
           </div>
         </div>
 
-        {(() => {
-          const buttonStatuses = ['active', 'succeeded', 'queued']
-          const showButton = buttonStatuses.includes(proposal.status)
-
-          if (!showButton) return null
-
-          return (
-            <div className="lg:w-fit lg:justify-self-end">
-              {proposal.status === 'active' && (
-                <VoteButton proposal={proposal} />
-              )}
-
-              {proposal.status === 'succeeded' && (
-                <ProposalActionButton proposal={proposal} action="queue" />
-              )}
-
-              {proposal.status === 'queued' && (
-                <ProposalActionButton proposal={proposal} action="execute" />
-              )}
-            </div>
-          )
-        })()}
+        <ProposalActionsClient proposalId={id} />
       </div>
 
-      {/* Mobile votes */}
-      <Card className="lg:hidden">
-        <VotingCardHeader proposal={proposal} />
-      </Card>
-
-      <a
-        href="#votes"
-        className={buttonVariants({
-          variant: 'default',
-          size: 'lg',
-          className: 'w-full lg:hidden',
-        })}
-      >
-        <ArrowDown />
-        Skip to Votes
-      </a>
+      <MobileVotesCard proposalId={id} />
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         {/* Proposal */}
@@ -313,119 +256,10 @@ export default async function Proposal({
         </Card>
 
         {/* Votes */}
-        <Card
-          className="sticky top-6 overflow-y-scroll rounded-xl shadow-custom-card lg:h-[calc(100svh-3rem)]"
-          id="votes"
-        >
-          <VotingCardHeader proposal={proposal} />
-
-          <hr />
-
-          <Tabs defaultValue="voted">
-            <div className="flex gap-4 items-center justify-between px-6 py-4 sticky top-0 bg-background border-b mb-4">
-              <CardTitle>Voters</CardTitle>
-              <TabsList className="rounded-full">
-                <TabsTrigger value="voted" className="rounded-full">
-                  Voted
-                </TabsTrigger>
-                <TabsTrigger value="notVoted" className="rounded-full">
-                  Didn't vote
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent value="voted">
-              <CardContent className="space-y-4">
-                {proposal.votes.map((vote) => {
-                  return (
-                    <ProposalVote
-                      key={vote.id}
-                      vote={vote}
-                      voter={vote.voter}
-                      weight={vote.weight}
-                    />
-                  )
-                })}
-              </CardContent>
-            </TabsContent>
-
-            <TabsContent value="notVoted">
-              <CardContent className="space-y-4">
-                {proposal.didntVote.map(({ address, votes }) => {
-                  return (
-                    <ProposalVote
-                      key={address}
-                      voter={address}
-                      weight={votes ?? '0'}
-                    />
-                  )
-                })}
-              </CardContent>
-            </TabsContent>
-          </Tabs>
-        </Card>
+        <VotesPanel proposalId={id} />
       </div>
 
       <Footer />
     </div>
-  )
-}
-
-function VotingCardHeader({
-  proposal,
-}: {
-  proposal: EnhancedProposalWithVotes
-}) {
-  return (
-    <CardHeader className="space-y-2">
-      <CardTitle className="mb-4">Votes</CardTitle>
-
-      <VoteBar proposal={proposal} voteType="for" />
-
-      <VoteBar proposal={proposal} voteType="against" />
-
-      {parseVotes(proposal.abstainVotes) > 0 && (
-        <VoteBar proposal={proposal} voteType="abstain" />
-      )}
-
-      {/* Quorum bar */}
-      <div className="relative overflow-hidden rounded bg-zinc-50">
-        <div className="relative z-10 flex justify-between gap-2 p-2 text-sm capitalize leading-none">
-          {(() => {
-            const votesTowadsQuorum = BigInt(proposal.forVotes)
-            const quorum = BigInt(proposal.quorum)
-
-            if (votesTowadsQuorum >= quorum) {
-              return (
-                <>
-                  <Typography className="font-medium">
-                    {bigintToFormattedString(quorum)}
-                  </Typography>
-                  <Typography>Quorum Reached</Typography>
-                </>
-              )
-            }
-
-            return (
-              <>
-                <Typography className="font-medium">
-                  {bigintToFormattedString(quorum - votesTowadsQuorum, {
-                    millions: true,
-                  })}
-                </Typography>
-                <Typography>Votes to Quorum</Typography>
-              </>
-            )
-          })()}
-        </div>
-
-        <div
-          className="absolute left-0 top-0 z-0 h-full rounded bg-brand-freedom-blue"
-          style={{
-            width: `${getQuorumProgress(proposal)}%`,
-          }}
-        />
-      </div>
-    </CardHeader>
   )
 }
