@@ -3,11 +3,11 @@
 import { EnhancedProposal } from 'indexer/types'
 import { CircleAlert } from 'lucide-react'
 import { useEffect } from 'react'
-import { ZkTokenGovernor as GovernorContract } from 'shared/contracts'
+import { ZkTokenGovernor as GovernorContract, ZkToken } from 'shared/contracts'
 import {
   useAccount,
-  useBlockNumber,
   useChainId,
+  useReadContract,
   useReadContracts,
   useSwitchChain,
   useWaitForTransactionReceipt,
@@ -36,7 +36,6 @@ import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 
 export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
   const { address } = useAccount()
-  const { data: blockNumber } = useBlockNumber()
   const tx = useWriteContract()
   const receipt = useWaitForTransactionReceipt({ hash: tx.data })
   const currentChainId = useChainId()
@@ -52,15 +51,13 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
         args: [BigInt(proposal.id), address],
       },
       {
-        address: proposal.governor,
-        abi: GovernorContract.abi,
+        ...ZkToken,
         functionName: 'getVotes',
-        // @ts-expect-error: the query is not run until the address and blockNumber are known
-        args: [address, (blockNumber ?? BigInt(0)) - BigInt(1)],
+        args: address ? [address] : undefined,
       },
     ],
     query: {
-      enabled: !!address && !!blockNumber && !!proposal?.id,
+      enabled: !!address && !!proposal?.id,
     },
   })
 
@@ -91,6 +88,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
         abi: GovernorContract.abi,
         functionName: 'castVoteWithReason',
         args: [BigInt(proposal.id), choice, reason],
+        chainId: zksync.id,
       })
     } else {
       tx.writeContract({
@@ -98,6 +96,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
         abi: GovernorContract.abi,
         functionName: 'castVote',
         args: [BigInt(proposal.id), choice],
+        chainId: zksync.id,
       })
     }
   }
@@ -121,8 +120,9 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
           variant="primary"
           className="font-bold"
           disabled={hasVoted === true}
-          onClick={() => {
+          onClick={(e) => {
             if (currentChainId !== zksync.id) {
+              e.preventDefault()
               switchChain({ chainId: zksync.id })
             }
           }}
@@ -210,7 +210,7 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
                 target="_blank"
                 className="flex items-center gap-1 text-sm text-muted-foreground hover:underline"
               >
-                View on Etherscan
+                View on Block Explorer
               </a>
             )}
           </DialogFooter>
