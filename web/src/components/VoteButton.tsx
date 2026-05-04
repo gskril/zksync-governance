@@ -52,8 +52,8 @@ export function VoteButton({ proposal }: { proposal: EnhancedProposal }) {
       },
       {
         ...ZkToken,
-        functionName: 'getVotes',
-        args: address ? [address] : undefined,
+        functionName: 'getPastVotes',
+        args: address ? [address, BigInt(proposal.startTimestamp)] : undefined,
       },
     ],
     query: {
