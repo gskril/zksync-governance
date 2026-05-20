@@ -44,10 +44,11 @@ export function ProposalsClient({ proposals: allProposals }: Props) {
   const governor = isAddress(_governor) ? _governor : undefined
   const router = useRouter()
 
-  const proposals = allProposals.filter((proposal) => {
-    if (!governor) return true
-    return proposal.governor === governor.toLowerCase()
-  })
+  const proposals =
+    allProposals?.filter?.((proposal) => {
+      if (!governor) return true
+      return proposal.governor === governor.toLowerCase()
+    }) ?? []
 
   return (
     <>
