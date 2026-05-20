@@ -11,7 +11,7 @@ import { ProposalsClient } from './client'
 export const revalidate = 60
 
 export default async function Home() {
-  const proposals = await getProposals()
+  const proposals = await getProposals().catch(() => [])
 
   return (
     <div className="container relative">
