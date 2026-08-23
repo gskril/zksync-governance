@@ -20,8 +20,5 @@
   },
   "peerDependencies": {
     "typescript": "5.9.3"
-  },
-  "overrides": {
-    "mdast-util-to-hast": "^13.2.1"
   }
 }
