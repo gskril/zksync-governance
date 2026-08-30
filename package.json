@@ -20,5 +20,10 @@
   },
   "peerDependencies": {
     "typescript": "5.9.3"
+  },
+  "overrides": {
+    "hono": "^4.13.5",
+    "axios": "^1.20.0",
+    "@escape.tech/graphql-armor-max-depth": "^2.4.2"
   }
 }
