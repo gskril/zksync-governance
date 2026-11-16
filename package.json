@@ -25,6 +25,7 @@
     "kysely": "^0.28.17",
     "drizzle-orm": ">=0.45.2",
     "@hono/node-server@1": "1.19.18",
-    "follow-redirects": "^1.16.2"
+    "graphql-yoga@5": "5.24.6",
+    "ws@8": "^8.21.0"
   }
 }
